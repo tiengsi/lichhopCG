@@ -1,0 +1,79 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>a5803a39-2075-48c4-a87c-9e80f95edcaf</UserSecretsId>
+    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20210818044534_UpdateScheduleTitleTemplate.cs" />
+    <Compile Remove="Migrations\20210818044534_UpdateScheduleTitleTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211207163622_AddScheduleTemplate.cs" />
+    <Compile Remove="Migrations\20211207163622_AddScheduleTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211207163717_AddScheduleTemplate.cs" />
+    <Compile Remove="Migrations\20211207163717_AddScheduleTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211207181554_AddTableTemplate.cs" />
+    <Compile Remove="Migrations\20211207181554_AddTableTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211207181812_AddTableTemplate.cs" />
+    <Compile Remove="Migrations\20211207181812_AddTableTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211207182213_AddTableTemplate.cs" />
+    <Compile Remove="Migrations\20211207182213_AddTableTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211207182450_AddTableTemplate.cs" />
+    <Compile Remove="Migrations\20211207182450_AddTableTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211207182616_AddTableTemplate.cs" />
+    <Compile Remove="Migrations\20211207182616_AddTableTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211208185001_addScheduleTemplate.cs" />
+    <Compile Remove="Migrations\20211208185001_addScheduleTemplate.Designer.cs" />
+    <Compile Remove="Migrations\20211211103238_UpdateAudiScheudule.cs" />
+    <Compile Remove="Migrations\20211211103238_UpdateAudiScheudule.Designer.cs" />
+    <Compile Remove="Migrations\20211211212001_addTemplate.cs" />
+    <Compile Remove="Migrations\20211211212001_addTemplate.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="5.2.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.14.0" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.16.0" />
+    <PackageReference Include="LinqKit.Core" Version="1.1.21" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.HelpPage" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="OpenXmlPowerTools" Version="4.5.3.2" />
+    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="QRCoder" Version="1.4.3" />
+    <PackageReference Include="Quartz" Version="3.3.2" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.Http" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
+    <PackageReference Include="Spire.Barcode" Version="6.3.1" />
+    <PackageReference Include="Swashbuckle" Version="5.6.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.7.*" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.7.*" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.7.*" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.7.*" />
+  </ItemGroup>
+
+
+</Project>

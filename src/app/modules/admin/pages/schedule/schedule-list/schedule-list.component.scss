@@ -1,0 +1,37 @@
+.status {
+  i.fa-user-check {
+    margin-right: 3px;
+    color: #28a745;
+  }
+  i.fa-eye-slash {
+    margin-right: 3px;
+    color: #dc3545;
+  }
+  span {
+    color: inherit;
+  }
+}
+.wrapper-content {
+  width: 100%; // chiều rộng bằng khối bao nó
+  white-space: pre-wrap;
+  overflow: hidden; // ẩn các nội dung khi kích thước lớn hơn chiều rộng khối bên ngoài
+  text-overflow: ellipsis; //thêm 3 dấu chấm ở cuối
+  -webkit-line-clamp: 3; // số dòng muốn hiển thị
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+}
+.span-all {
+  height: auto;
+  overflow: auto;
+  text-overflow:unset;
+  -webkit-line-clamp:unset;
+}
+.btn-expan-all {
+  text-align: right;
+  float: right;
+  font-size: 11px;
+  color: #28a745;
+}
+.table-bordered th, .table-bordered td {
+  border: 1px solid #848893;
+}

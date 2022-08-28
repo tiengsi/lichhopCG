@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <h4 class="modal-title">Xóa bản ghi</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-1">
+      <b class="icon-remove">
+        <i class="far fa-times-circle"></i>
+      </b>
+    </div>
+    <div class="col modal-inner-content">
+      {{ 'COMMON.DELETE_CONFIRM' | translate }}
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Cancel')">{{ 'COMMON.MODAL_CANCEL' | translate }}</button>
+  <button type="button" class="btn btn-danger" (click)="activeModal.close('Ok')">{{ 'COMMON.MODAL_OK' | translate }}</button>
+</div>

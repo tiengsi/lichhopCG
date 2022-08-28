@@ -1,0 +1,31 @@
+<div id="detailModal" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thông tin lịch họp</h4>                
+            </div>
+            <div class="modal-body">
+                <h4>{{model?.title}}</h4>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>Nội dung</td>
+                        <td [innerHTML]="model?.content"></td>                        
+                    </tr>
+                    <tr>
+                        <td>Thời gian</td>
+                        <!-- <td>{{model?.time}}</td> -->
+                        <td>{{timeString}}</td>
+                    </tr>                    
+                </table>
+            </div>
+            <div class="modal-footer row">
+                <button type="button" class="btn btn-primary" [hidden]="isSelf" (click)="goToDetail(model.id)">Xem chi tiết lịch</button>
+                <button type="button" class="btn btn-secondary" (click)="toggleForm(2)">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+

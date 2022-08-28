@@ -1,0 +1,171 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="'COMMON.BUTTON_ADD' | translate" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button class="btn btn-secondary mr-2" [routerLink]="['/admin/user']">
+        <i class="fas fa-chevron-left"></i>
+        {{ "COMMON.BUTTON_CANCEL" | translate }}
+      </button>
+      <button *ngIf="showCreateBtn" class="btn btn-primary" (click)="onSumbit()" [disabled]="!userForm.valid">
+        <i class="far fa-save"></i>
+        {{ "COMMON.BUTTON_SAVE" | translate }}
+      </button>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <form [formGroup]="userForm">
+      <div class="form-group row">
+        <label for="txtUserName" class="col-sm-2 col-form-label col-form-label-sm">Tài khoản</label>
+        <div class="col-sm-10">
+          <input (keypress)="nospaces($event)" type="text" class="form-control form-control-sm" id="txtUserName" placeholder="Tài khoản"
+            formControlName="userName" />
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('userName', 'required')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+
+          <!-- <div class="fv-plugins-message-container" *ngIf="isControlHasError('userName', 'minlength')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.MIN_LENGTH_FIELD" | translate }} 6
+            </div>
+          </div> -->
+
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('userName', 'maxlength')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.MAX_LENGTH_FIELD" | translate }} 320
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtPass" class="col-sm-2 col-form-label col-form-label-sm">Mật khẩu</label>
+        <div class="col-sm-10">
+          <input type="password" class="form-control form-control-sm" id="txtPass" placeholder="Mật khẩu"
+            formControlName="password" />
+          <div>
+            Mật khẩu mặc định: Canbo1234
+          </div>
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('password', 'required')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('password', 'minlength')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.MIN_LENGTH_FIELD" | translate }} 8
+            </div>
+          </div>
+
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('password', 'maxlength')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.MAX_LENGTH_FIELD" | translate }} 320
+            </div>
+          </div>
+
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('password', 'pattern')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              <ul>
+                <li>Mật khẩu phải bắt đầu bằng chữ cái</li>
+                <li>Mật khẩu phải có chứa ít nhất một chữ hoa</li>
+                <li>Mật khẩu phải có chứa ít nhất một chữ thường</li>
+                <li>Mật khẩu phải có chứa ít nhất một chữ số</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtFullName" class="col-sm-2 col-form-label col-form-label-sm">Họ và tên</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control form-control-sm" id="txtFullName" placeholder="Họ và tên"
+            formControlName="fullName" />
+
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('fullName', 'required')">
+            <div data-field="fullName" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtShortName" class="col-sm-2 col-form-label col-form-label-sm">Tên viết tắt</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control form-control-sm" id="txtShortName" placeholder="Ví dụ: Đ/C Mai"
+            formControlName="shortName" />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtPosition" class="col-sm-2 col-form-label col-form-label-sm">Chức vụ</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control form-control-sm" id="txtPosition" placeholder="Chức vụ"
+            formControlName="officerPosition" />
+
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtdptId" class="col-sm-2 col-form-label col-form-label-sm">Phòng ban</label>
+        <div class="col-sm-10">
+          <!-- <select class="form-control" id="sldptId" formControlName="dptId">
+            <option [ngValue]="null">--- Chọn phòng ban ---</option>
+            <option *ngFor="let item of departments" [value]="item.id">
+              {{ item.name }}
+            </option>
+          </select> -->
+          <ng-select [clearable]="false" class="mr-2" id="sldptId" formControlName="dptId">
+            <ng-option *ngFor="let item of departments" [value]="item.id">{{item.name}}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtPhone" class="col-sm-2 col-form-label col-form-label-sm">Là người chủ trì</label>
+        <div class="col-sm-10">
+          <input type="checkbox" class="form-check-input" id="ckIsHost" style="margin-left: 1px"
+            formControlName="isHost" />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtPhone" class="col-sm-2 col-form-label col-form-label-sm">Điện thoại</label>
+        <div class="col-sm-10">
+          <input type="text" (keypress)="numberOnly($event)" class="form-control form-control-sm" id="txtPhone" placeholder="Điện thoại"
+            formControlName="phoneNumber" />
+
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('phoneNumber', 'required')">
+            <div data-field="phoneNumber" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtEmail" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
+        <div class="col-sm-10">
+          <input type="email" class="form-control form-control-sm" id="txtEmail" placeholder="Email"
+            formControlName="email" />
+        </div>
+      </div>
+
+      <!-- <div class="form-group row">
+        <label for="txtPhone" class="col-sm-2 col-form-label col-form-label-sm">Hiện/Ẩn danh bạ</label>
+        <div class="col-sm-10">
+          <input type="checkbox" class="form-check-input" id="ckIsShow" style="margin-left: 1px"
+            formControlName="isShow" />
+        </div>
+      </div> -->
+    </form>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

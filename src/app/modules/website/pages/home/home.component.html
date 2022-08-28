@@ -1,0 +1,986 @@
+
+<div class="row">
+  <div class="card w-100">
+    <div class="card-body">
+      <div class="pb-3 d-flex flex-wrap" id="data-ghichucanhan">
+        <div *ngIf="noticeWeeklySetting"
+             class="wb-notice-weekly"
+             [innerHTML]="noticeWeeklySetting.settingValue"></div>
+
+        <div class="wb-schedule-filter">
+          <form class="form-row align-items-center">
+            <div class="col-auto">
+              <select class="custom-select mr-sm-2"
+                      id="slHost"
+                      name="host"
+                      [(ngModel)]="hostSelected">
+                <option *ngFor="let item of hosts" [value]="item.id">
+                  {{ item.fullName }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-auto">
+              <select class="custom-select mr-sm-2"
+                      id="slLocation"
+                      name="location"
+                      [(ngModel)]="locationSelected">
+                <option *ngFor="let item of locations" [value]="item.id">
+                  {{ item.title }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-auto">
+              <select class="custom-select mr-sm-2"
+                      id="slWeek"
+                      [(ngModel)]="weekSelected"
+                      name="week"
+                      (change)="onSelectWeek($event.target.value)">
+                <option *ngFor="let item of weeks" [value]="item.id">
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+
+            <!-- <div class="col-auto">
+              <label class="ml-5 mt-3"
+                >{{ startDateOfWeek | date: "dd/MM/yyyy" }} -
+                {{ endDateOfWeek | date: "dd/MM/yyyy" }}</label
+              >
+            </div> -->
+
+            <div class="col-auto">
+              <button type="submit"
+                      class="btn btn-primary"
+                      (click)="loadScheduleByAllDayOfWeek()">
+                <i class="fas fa-filter"></i> Lọc
+              </button>
+            </div>
+            <!--<div class="col-auto">-->
+            <!--<button type="submit"
+                    class="btn btn-primary"
+                    (click)="loadScheduleByAllDayOfWeek()">
+              <i class="fas fa-filter"></i> Lọc
+            </button>-->
+            <!--<a href="javascript:;" class="btn btn-warning" (click)="printDiv()">
+                <i class="fas fa-print"></i> In lịch tuần
+              </a>
+            </div>-->
+            <div class="col-auto">
+              <!--<button type="submit"
+                      class="btn btn-primary"
+                      (click)="loadScheduleByAllDayOfWeek()">
+                <i class="fas fa-filter"></i> Lọc
+              </button>-->
+              <a href="javascript:;" class="btn btn-success" (click)="printWord()">
+                <i class="fas fa-file-word"></i> Lưu lịch dạng Word
+              </a>
+            </div>
+          </form>
+        </div>
+
+        <div class="tabs flex-wrap mt-3">
+          <div *ngFor="let item of allDayOfWeek">
+            <div class="tab-item bg-gains" data-id="data-lichcanhan" [ngClass]="{ active: item.isActive }" href="javascript:;"
+                 (click)="loadSchedule(item)">
+
+              {{ item.day }}<br class="d-none d-md-block">{{ item.fullDay | date: "dd/MM/yyyy" }}
+
+            </div>
+
+          </div>
+          <div class="tab-item bg-gains" [ngClass]="{ active: isAllDayOfWeekSelected }" data-id="data-lichcanhan" href="javascript:;"
+               (click)="loadScheduleByAllDayOfWeek()">
+            Cả tuần
+            <br class="d-none d-md-block">
+            {{ startDateOfWeek | date: "dd/MM/yyyy" }} -
+            {{ endDateOfWeek | date: "dd/MM/yyyy" }}
+          </div>
+          <!--<ul>
+            <li *ngFor="let item of allDayOfWeek">
+              <a href="javascript:;"
+                 [ngClass]="{ active: item.isActive }"
+                 (click)="loadSchedule(item)">
+                {{ item.day }}<span>{{ item.fullDay | date: "dd/MM/yyyy" }}</span>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:;"
+                 [ngClass]="{ active: isAllDayOfWeekSelected }"
+                 (click)="loadScheduleByAllDayOfWeek()">
+                Cả tuần
+                <span>
+                  {{ startDateOfWeek | date: "dd/MM/yyyy" }} -
+                  {{ endDateOfWeek | date: "dd/MM/yyyy" }}
+                </span>
+              </a>
+            </li>
+          </ul>-->
+        </div>
+
+        <!--<div class="text-center text-danger pb-3"
+             style="font-weight: bold; font-size: 14px; width: 100%">
+          Lịch làm việc trực tuyến đang trong giai đoạn thử nghiệm
+        </div>-->
+        
+        <div class="col-12" *ngIf="haveHid">
+          <p (click)="toggleShowPrev()">{{(!showPrev ? 'Hiển thị ' : 'Ẩn ') + 'lịch các ngày trước'}}</p>
+        </div>
+        
+        <div class="wb-schedule-table" *ngIf="schedules.length > 0">
+          <table width="100%"
+                 border="0"
+                 cellpadding="0"
+                 cellspacing="0"
+                  >
+            <thead>
+              <tr>
+                <td class="date_right lich_Header"
+                    valign="middle"
+                    width="8%"
+                    align="center">
+                  Ngày
+                </td>
+                <td class="date_right lich_Header"
+                    valign="middle"
+                    width="92%"
+                    align="center">
+                  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                      <tr>
+                        <td class="date_right lich_Header"
+                            valign="middle"
+                            width="5%"
+                            align="center">
+                          Buổi
+                        </td>
+                        <td class="date_right lich_Header" valign="middle">
+                          <table width="100%"
+                                 border="0"
+                                 cellpadding="0"
+                                 cellspacing="0">
+                            <tbody>
+                              <tr>
+                                <td class="date_right lich_Header"
+                                    valign="middle"
+                                    width="4%"
+                                    align="center">
+                                  Giờ
+                                </td>
+                                <td class="date_right lich_Header"
+                                    valign="middle"
+                                    width="10%"
+                                    align="center">
+                                  Lãnh đạo
+                                </td>
+                                <td class="date_right lich_Header"
+                                    valign="middle"
+                                    align="center">
+                                  Nội dung
+                                </td>
+                                <td class="date_right lich_Header"
+                                    valign="middle"
+                                    width="10%"
+                                    align="center">
+                                  Chuẩn bị
+                                </td>
+                                <!-- 15% -->
+                                <td class="date_right lich_Header"
+                                    valign="middle"
+                                    width="30%"
+                                    align="center">
+                                  Thành phần
+                                </td>
+                                <!-- 10% -->
+                                <td class="date_right lich_Header"
+                                    valign="middle"
+                                    width="15%"
+                                    align="center">
+                                  Địa điểm
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </thead>
+          </table>
+
+          <table class="clscontentLich"
+                 width="100%"
+                 border="0"
+                 cellpadding="1"
+                 cellspacing="1">
+            <tbody>
+              <ng-container *ngFor="let schedule of schedules">
+                <tr *ngIf="checkPrevDays(schedule.dayOfWeek) || showPrev">
+                  <td class="date_left" width="8%">
+                    <strong>{{ schedule.dayOfWeek }}</strong>
+                  </td>
+                  <td class="date_right" colspan="7" width="92%">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                      <tbody>
+                        <tr>
+                          <td class="date_left"
+                              width="5%"
+                              style="
+                      text-align: center;
+                      vertical-align: middle;
+                      border-left: none;
+                    ">
+                            Sáng
+                          </td>
+                          <td class="date_right" style="border-right: none">
+                            <table width="100%"
+                                   border="0"
+                                   cellpadding="0"
+                                   cellspacing="0"
+                                   class="detail-table-schedule">
+                              <tbody>
+                                <tr *ngFor="let item of schedule.morning"
+                                    [ngClass]="{
+                            'txt-warning':
+                              item.scheduleStatus === scheduleStatus.Pause,
+                            'txt-info':
+                              item.scheduleStatus === scheduleStatus.Changed
+                          }">
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="4%">
+                                    {{ item.scheduleTime }}
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="10%">
+                                    {{ item.includedOfficer == null || item.includedOfficer == '' ? item.officerName : item.includedOfficer }}
+                                  </td>
+                                  <td class="Lich_ChiTiet">
+                                    <span ngbTooltip="Lịch này đã bị hoãn" style="color: #e74c3c;" *ngIf="item.scheduleStatus === scheduleStatus.Pause">                                    
+                                      (Hoãn)
+                                    </span>
+                                    <span ngbTooltip="Lịch này đã được dời" style="color: #e74c3c;" *ngIf="item.scheduleStatus === scheduleStatus.Changed">
+                                      (Dời)
+                                    </span>
+                                    <a href="javascript:void(0)"
+                                       [ngStyle]="(item.scheduleStatus === scheduleStatus.Pause || item.scheduleStatus === scheduleStatus.Changed) && {'color': '#e74c3c'}"
+                                       style="margin-bottom: 2px"
+                                       (click)="onViewDetailSchedule(item)"
+                                       ngbTooltip="Click vào đây để xem chi tiết">
+                                      {{ item.scheduleTitle }}
+                                    </a>
+                                    <div class="text-right text-status-change">
+                                      <ng-template [ngIf]="item.isHasFilesAttachment">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-file.png" alt=""> Tài liệu
+                                        </badge>                                       
+                                      </ng-template>
+  
+                                      <!--<ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Release">
+                                        <i class="fa-lg fas fa-check-square primary text-primary"> </i> Đã phát hành
+                                      </ng-template>-->
+  
+                                      <ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Pause">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle.png" alt=""> Đã hoãn
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Changed">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle-red.png" alt=""> Đã sửa đổi
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.isSendSMSInvite">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-telegram.png" alt=""> Đã gửi thư mời
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.isChangeLocation">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle-red.png" alt=""> Đã đổi địa điểm
+                                        </badge>
+                                      </ng-template>
+                                    </div>
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="10%">
+                                    {{ item.departmentPrepare }}
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="30%">
+                                    <span class="wrapper-content"
+                                          title="{{ item.participantDisplay }}">{{ item.participantDisplay }}</span>
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="15%">
+                                    {{ item.otherLocation }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+  
+                        <tr>
+                          <td class="date_left"
+                              width="5%"
+                              style="
+                      text-align: center;
+                      vertical-align: middle;
+                      border-left: none;
+                      /* border-bottom: none; */
+                    ">
+                            Chiều
+                          </td>
+                          <td class="date_right">
+                            <table class="clscontentLich"
+                                   width="100%"
+                                   border="0"
+                                   cellpadding="0"
+                                   cellspacing="0"
+                                   class="detail-table-schedule">
+                              <tbody>
+                                <tr *ngFor="let item of schedule.afternoon"
+                                    [ngClass]="{
+                            'txt-warning':
+                              item.scheduleStatus === scheduleStatus.Pause,
+                            'txt-info':
+                              item.scheduleStatus === scheduleStatus.Changed
+                          }">
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="4%">
+                                    {{ item.scheduleTime }}
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="10%">
+                                    {{ item.includedOfficer == null || item.includedOfficer == '' ? item.officerName : item.includedOfficer }}
+                                  </td>
+                                  <td class="Lich_ChiTiet">
+                                    <span ngbTooltip="Lịch này đã bị hoãn" style="color: #e74c3c;" *ngIf="item.scheduleStatus === scheduleStatus.Pause">
+                                      (Hoãn)
+                                    </span>
+                                    <span ngbTooltip="Lịch này đã được dời" style="color: #e74c3c;" *ngIf="item.scheduleStatus === scheduleStatus.Changed">
+                                      (Dời)
+                                    </span>
+                                    <a href="javascript:void(0)"
+                                    [ngStyle]="(item.scheduleStatus === scheduleStatus.Pause || item.scheduleStatus === scheduleStatus.Changed) && {'color': '#e74c3c'}"
+                                       style="margin-bottom: 2px"
+                                       (click)="onViewDetailSchedule(item)"
+                                       ngbTooltip="Click vào đây để xem chi tiết">
+                                      {{ item.scheduleTitle }}
+                                    </a>
+                                    
+                                    <div class="text-right text-status-change">
+                                      <ng-template [ngIf]="item.isHasFilesAttachment">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-file.png" alt=""> Tài liệu
+                                        </badge>
+                                      </ng-template>
+  
+                                      <!--<ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Release">
+      <i class="fa-lg fas fa-check-square primary text-primary"> </i> Đã phát hành
+    </ng-template>-->
+  
+                                      <ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Pause">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle.png" alt=""> Đã hoãn
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Changed">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle-red.png" alt=""> Đã sửa đổi
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.isSendSMSInvite">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-telegram.png" alt=""> Đã gửi thư mời
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.isChangeLocation">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle-red.png" alt=""> Đã đổi địa điểm
+                                        </badge>
+                                      </ng-template>
+                                    </div>
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="10%">
+                                    {{ item.departmentPrepare }}
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="30%">
+                                    <span class="wrapper-content"
+                                          title="{{ item.participantDisplay }}">{{ item.participantDisplay }}</span>
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="15%">
+                                    {{ item.otherLocation }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+  
+                        <tr *ngIf="schedule.evening.length > 0">
+                          <td class="date_left"
+                              width="5%"
+                              style="
+                      text-align: center;
+                      vertical-align: middle;
+                      border-left: none;
+                      border-bottom: none;
+                    ">
+                            Tối
+                          </td>
+                          <td>
+                            <table class="clscontentLich"
+                                   width="100%"
+                                   border="0"
+                                   cellpadding="0"
+                                   cellspacing="0"
+                                   class="detail-table-schedule">
+                              <tbody>
+                                <tr *ngFor="let item of schedule.evening"
+                                    [ngClass]="{
+                            'txt-warning':
+                              item.scheduleStatus === scheduleStatus.Pause,
+                            'txt-info':
+                              item.scheduleStatus === scheduleStatus.Changed
+                          }">
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="4%">
+                                    {{ item.scheduleTime }}
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="10%">
+                                    {{ item.includedOfficer == null || item.includedOfficer == '' ? item.officerName : item.includedOfficer }}
+                                  </td>
+                                  <td class="Lich_ChiTiet">
+                                    <span ngbTooltip="Lịch này đã bị hoãn" style="color: #e74c3c;" *ngIf="item.scheduleStatus === scheduleStatus.Pause">
+                                      (Hoãn)
+                                    </span>
+                                    <span ngbTooltip="Lịch này đã được dời" style="color: #e74c3c;" *ngIf="item.scheduleStatus === scheduleStatus.Changed">
+                                      (Dời)
+                                    </span>
+                                    <a href="javascript:void(0)"
+                                    [ngStyle]="(item.scheduleStatus === scheduleStatus.Pause || item.scheduleStatus === scheduleStatus.Changed) && {'color': '#e74c3c'}"
+                                       style="margin-bottom: 2px"
+                                       (click)="onViewDetailSchedule(item)"
+                                       ngbTooltip="Click vào đây để xem chi tiết">
+                                      {{ item.scheduleTitle }}
+                                    </a>
+                                    <div class="text-right text-status-change">
+                                      <ng-template [ngIf]="item.isHasFilesAttachment">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-file.png" alt=""> Tài liệu
+                                        </badge>
+                                      </ng-template>
+  
+                                      <!--<ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Release">
+      <i class="fa-lg fas fa-check-square primary text-primary"> </i> Đã phát hành
+    </ng-template>-->
+  
+                                      <ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Pause">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle.png" alt=""> Đã hoãn
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.scheduleStatus === scheduleStatus.Changed">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle-red.png" alt=""> Đã sửa đổi
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.isSendSMSInvite">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-telegram.png" alt=""> Đã gửi thư mời
+                                        </badge>
+                                      </ng-template>
+  
+                                      <ng-template [ngIf]="item.isChangeLocation">
+                                        <badge class="badge badge-blue">
+                                          <img src="assets/img/icon-circle-red.png" alt=""> Đã đổi địa điểm
+                                        </badge>
+                                      </ng-template>
+                                    </div>
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="10%">
+                                    {{ item.departmentPrepare }}
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="30%">
+                                    <span class="wrapper-content"
+                                          title="{{ item.participantDisplay }}">{{ item.participantDisplay }}</span>
+                                  </td>
+                                  <td class="Lich_ChiTiet"
+                                      style="text-align: center"
+                                      width="15%">
+                                    {{ item.otherLocation }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="wb-no-data" *ngIf="schedules.length === 0">
+          Không có lịch họp nào được tìm thấy.
+        </div>
+
+        <ng-template #content1 let-modal>
+
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="wb-schedule-table" *ngIf="schedules.length > 0" id="printDiv" style="display:none">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <div style="text-align:center;">
+          <b>ỦY BAN NHÂN DÂN TỈNH YÊN BÁI <br />SỞ THÔNG TIN VÀ TRUYỀN THÔNG</b><br />
+          <p>------</p>
+          <p>Số: {{weekSelected}}/STTTT</p>
+        </div>
+      </td>
+      <td>
+        <div style="text-align:center;">
+          <b>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM <br />Độc lập - Tự do - Hạnh phúc</b>
+          <br />
+          <p>------</p>
+          <p style="font-style:italic;"> Yên Bái, ngày {{todayVar  | date: "dd"}} tháng {{todayVar | date: "MM" }} năm {{todayVar | date: "yyyy"}} </p>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <div style="text-align:center;">
+    <br />
+    <b>LỊCH LÀM VIỆC CỦA SỞ THÔNG TIN VÀ TRUYỀN THÔNG</b><br />
+    <b>(Tuần thứ {{weekSelected}}, Từ ngày {{ startDateOfWeek | date: "dd/MM/yyyy" }} đến ngày {{ endDateOfWeek | date: "dd/MM/yyyy" }} )</b>
+    <br />
+  </div>
+
+  <table width="100%"
+         border="0"
+         cellpadding="0"
+         cellspacing="0"
+         style="border: 1px solid #81a3d0">
+    <thead>
+      <tr>
+        <td class="date_right lich_Header"
+            valign="middle"
+            width="8%"
+            align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+          Ngày
+        </td>
+        <td class="date_right lich_Header"
+            valign="middle"
+            width="92%"
+            align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+              <tr>
+                <!-- 8% -->
+                <td class="date_right lich_Header"
+                    valign="middle"
+                    width="5%"
+                    align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+                  Buổi
+                </td>
+                <td class="date_right lich_Header" valign="middle" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+                  <table width="100%"
+                         border="0"
+                         cellpadding="0"
+                         cellspacing="0">
+                    <tbody>
+                      <tr>
+                        <!-- 6% -->
+                        <td class="date_right lich_Header"
+                            valign="middle"
+                            width="4%"
+                            align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+                          Giờ
+                        </td>
+                        <td class="date_right lich_Header"
+                            valign="middle"
+                            width="10%"
+                            align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+                          Lãnh đạo
+                        </td>
+                        <td class="date_right lich_Header"
+                            valign="middle"
+                            align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+                          Nội dung
+                        </td>
+                        <td class="date_right lich_Header"
+                            valign="middle"
+                            width="10%"
+                            align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+                          Chuẩn bị
+                        </td>
+                        <td class="date_right lich_Header"
+                            valign="middle"
+                            width="30%"
+                            align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+                          Thành phần
+                        </td>
+                        <td class="date_right lich_Header"
+                            valign="middle"
+                            width="15%"
+                            align="center" style="
+    background-color: white;
+    padding: 0;
+    border-right: 2px solid #81a3d0;
+    line-height: 25px;
+    background-color: #ffffcc;
+    border-right: solid 2px #81a3d0;
+    height: 40px;
+">
+                          Địa điểm
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </thead>
+  </table>
+
+  <table class="clscontentLich"
+         width="100%"
+         border="0"
+         cellpadding="1"
+         cellspacing="1">
+    <tbody>
+      <tr *ngFor="let schedule of schedules">
+        <td class="date_left" width="8%" style="
+    text-align: center;
+    padding: 5px 0;
+    border-bottom: 2px solid #81a3d0;
+    background-color: white;
+    padding: 0;
+    border-left: 2px solid #81a3d0;
+    border-right: 2px solid #81a3d0;
+">
+          <strong>{{ schedule.dayOfWeek }}</strong>
+        </td>
+        <td class="date_right" colspan="7" width="92%" style="border-bottom: 2px solid #81a3d0;
+        background-color: white;
+        padding: 0;
+        border-right: 2px solid #81a3d0;
+        line-height: 25px;
+">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+              <tr>
+                <td class="date_left"
+                    width="8%"
+                    style="    text-align: center;
+    vertical-align: middle;
+    border-left: none;
+    border-bottom: 1px solid #81a3d0;
+    border-right: 1px solid #81a3d0;
+  ">
+                  Sáng
+                </td>
+                <td class="date_right" style="">
+                  <table width="100%"
+                         border="0"
+                         cellpadding="0"
+                         cellspacing="0"
+                         class="detail-table-schedule">
+                    <tbody>
+                      <tr *ngFor="let item of schedule.morning"
+                          [ngClass]="{
+                          'bg-warning':
+                            item.scheduleStatus === scheduleStatus.Pause,
+                          'bg-info':
+                            item.scheduleStatus === scheduleStatus.Changed
+                        }">
+                        <td class="Lich_ChiTiet"
+                            style="text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="6%">
+                          {{ item.scheduleTime }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="10%">
+                          {{ item.includedOfficer == null || item.includedOfficer == '' ? item.officerName : item.includedOfficer }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    margin-bottom: 2px;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;">
+                          {{ item.scheduleTitle }}
+
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="10%">
+                          {{ item.departmentPrepare }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="15%">
+                          <span class="wrapper-content"
+                                title="{{ item.participantDisplay }}">{{ item.participantDisplay }}</span>
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;        padding: 5px;    color: #000;    line-height: 21px;" width="10%">
+                          {{ item.otherLocation }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="date_left"
+                    width="8%"
+                    style="    text-align: center;
+    vertical-align: middle;
+    border-left: none;
+    border-right: 1px solid #81a3d0;
+    /* border-bottom: none; */
+  ">
+                  Chiều
+                </td>
+                <td class="date_right" style="border-top: 1px solid #81a3d0;">
+                  <table class="detail-table-schedule"
+                         width="100%"
+                         border="0"
+                         cellpadding="0"
+                         cellspacing="0">
+                    <tbody>
+                      <tr *ngFor="let item of schedule.afternoon"
+                          [ngClass]="{
+                          'bg-warning':
+                            item.scheduleStatus === scheduleStatus.Pause,
+                          'bg-info':
+                            item.scheduleStatus === scheduleStatus.Changed
+                        }">
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="6%">
+                          {{ item.scheduleTime }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;
+    border-right: 1px solid #c6dbff;
+    padding: 5px;
+    color: #000;
+    line-height: 21px;" width="10%">
+                          {{ item.includedOfficer == null || item.includedOfficer == '' ? item.officerName : item.includedOfficer }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    margin-bottom: 2px; border-right: 1px solid #c6dbff;        padding: 5px;color: #000;   line-height: 21px;">
+                          {{ item.scheduleTitle }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;
+    border-right: 1px solid #c6dbff;
+    padding: 5px;
+    color: #000;
+    line-height: 21px;"
+                            width="10%">
+                          {{ item.departmentPrepare }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;
+    border-right: 1px solid #c6dbff;
+    padding: 5px;
+    color: #000;
+    line-height: 21px;"
+                            width="15%">
+                          <span class="wrapper-content"
+                                title="{{ item.participantDisplay }}">{{ item.participantDisplay }}</span>
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="text-align: center"
+                            width="10%">
+                          {{ item.otherLocation }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <tr *ngIf="schedule.evening.length > 0" style="display: {{ schedule.evening.length > 0 ? 'contents;':'none;'  }}  ">
+                <td class="date_left"
+                    width="8%"
+                    style="
+                    text-align: center;
+                    vertical-align: middle;
+                    border-left: none;
+                    border-bottom: none;  border-right: 1px solid #81a3d0;
+                    ">
+                  Tối
+                </td>
+                <td>
+                  <table class="clscontentLich"
+                         width="100%"
+                         border="0"
+                         cellpadding="0"
+                         cellspacing="0">
+                    <tbody>
+                      <tr *ngFor="let item of schedule.evening"
+                          [ngClass]="{
+                          'bg-warning':
+                            item.scheduleStatus === scheduleStatus.Pause,
+                          'bg-info':
+                            item.scheduleStatus === scheduleStatus.Changed
+                        }">
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="6%">
+                          {{ item.scheduleTime }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="10%">
+                          {{ item.includedOfficer == null || item.includedOfficer == '' ? item.officerName : item.includedOfficer }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    margin-bottom: 2px;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;">
+                          {{ item.scheduleTitle }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="10%">
+                          {{ item.departmentPrepare }}
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;    border-right: 1px solid #c6dbff;        padding: 5px;    color: #000;    line-height: 21px;" width="15%">
+                          <span class="wrapper-content"
+                                title="{{ item.participantDisplay }}">{{ item.participantDisplay }}</span>
+                        </td>
+                        <td class="Lich_ChiTiet"
+                            style="    text-align: center;        padding: 5px;    color: #000;    line-height: 21px;"
+                            width="10%">
+                          {{ item.otherLocation }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="text-align:left;">
+    <br />
+    <b>Lưu ý:</b><br />
+    <b>- Lịch công tác thay Thư mời, đề nghị các đồng chí dự họp đúng giờ, đúng thành phần; </b><br />
+    <b>- Đề nghị các cơ quan, đơn vị chuẩn bị nội dung cuộc họp theo phân công. </b>
+    <br />
+  </div>
+</div>

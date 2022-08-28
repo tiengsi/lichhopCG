@@ -1,0 +1,62 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="'Quản Lý mẫu tiêu đề'" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button class="btn btn-primary" (click)="addEditModal()">
+        <i class="fas fa-plus"></i>
+        {{ "COMMON.BUTTON_ADD" | translate }}
+      </button>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+
+    <div *ngIf="items.length > 0">
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Mẫu</th>
+              <th scope="col" style="width: 200px" class="text-center">{{ "COMMON.ACTION_COLUME" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of items; let i = index">
+              <th scope="row">{{ i + 1 }}</th>
+              <td>{{ item.template }}</td>
+
+              <td class="text-center">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button class="btn btn-sm btn-primary" (click)="addEditModal(item)">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="delete(item)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-between p-2">
+        <ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize" (pageChange)="loadTitleTemplate()">
+        </ngb-pagination>
+        <div class="page-per-total">
+          Hiển thị {{ count }} / {{ totalCount }} bản ghi
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="items.length === 0">
+      <div class="text-center text-danger p-3">
+        Không có bản ghi nào!
+      </div>
+    </div>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

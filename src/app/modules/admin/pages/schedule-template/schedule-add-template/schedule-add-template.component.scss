@@ -1,0 +1,16 @@
+.tableFixHead {
+  height: 260px;
+  overflow-y: auto;
+
+  table {
+    width: 100%;
+
+    thead {
+      th {
+        position: sticky;
+        top: 0;
+        background: #fff;
+      }
+    }
+  }
+}

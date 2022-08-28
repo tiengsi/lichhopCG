@@ -1,0 +1,66 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header
+    [title]="'Cấu Hình Website'"
+    [class]="'card-head-lg'"
+  >
+    <ng-container ktPortletTools>
+      <button class="btn btn-primary" (click)="onSumbit()" [disabled]="!settingForm.valid">
+        <i class="far fa-save"></i>
+        {{ "COMMON.BUTTON_EDIT_SAVE" | translate }}
+      </button>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <form #settingForm="ngForm">
+      <div *ngFor="let item of settings">
+        <div class="form-group row" *ngIf="item.settingTypeControl === 0">
+          <label for="{{item.settingKey}}" class="col-sm-2 col-form-label col-form-label-sm"
+            >{{item.settingName}}</label
+          >
+          <!-- textbox -->
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="{{item.settingKey}}"
+              placeholder="{{item.settingName}}"
+              [(ngModel)]="item.settingValue"
+              name="{{item.settingKey}}"
+            />
+          </div>
+
+          <!-- editor -->
+          <div class="col-sm-10" *ngIf="item.settingTypeControl === 3">
+            <angular-editor
+            [(ngModel)]="item.settingValue"
+            [config]="{height: '15rem'}"
+            name="{{item.settingKey}}"
+            ></angular-editor>
+          </div>
+        </div>
+
+        <div class="form-group row" *ngIf="item.settingTypeControl === 3">
+          <label for="{{item.settingKey}}" class="col-sm-2 col-form-label col-form-label-sm"
+            >{{item.settingName}}</label
+          >
+
+          <!-- editor -->
+          <div class="col-sm-10">
+            <angular-editor
+            [(ngModel)]="item.settingValue"
+            [config]="config"
+            name="{{item.settingKey}}"
+            ></angular-editor>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

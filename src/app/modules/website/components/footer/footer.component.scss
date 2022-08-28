@@ -1,0 +1,62 @@
+:host {
+  .footer-content {
+    background-image: url("/assets/website/footer.jpg");
+    background-color: #1b56ce;
+    color: #fff;
+    font-size: 14px;
+    padding: 10px 0px;
+    margin-top: 10px;
+
+    h5 {
+      color: #f2f25b;
+      font-size: 14px;
+    }
+
+    ul.footer-info {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style: none;
+        padding: 4px 0px;
+        a {
+          color: #fff;
+          font-size: 13px;
+          i {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+
+    select {
+      margin-top: 10px;
+    }
+
+    .link_fac {
+      display: block;
+      a:first-child {
+        margin-right: 10px;
+      }
+      a {
+        margin-top: 10px;
+        background: #fff;
+        border-radius: 50%;
+        display: inline-flex;
+        width: 40px;
+        height: 40px;
+        i {
+          color: blue;
+          margin-top: 11px;
+          margin-left: 13px;
+        }
+      }
+    }
+
+    .store-app-info-top {
+      padding-top: 20px;
+      img {
+        margin-right: 5px;
+      }
+    }
+  }
+}

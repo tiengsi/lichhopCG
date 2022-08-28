@@ -1,0 +1,95 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="'Gửi thông báo tin nhắn'" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button class="btn btn-primary" (click)="onSubmit()" [disabled]="!scheduleForm.form.valid">
+        <i class="far fa-save"></i>
+        Gửi tin nhắn
+      </button>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <form #scheduleForm="ngForm">
+
+      <div class="form-group row">
+        <label for="txtFullName" class="col-sm-2 col-form-label col-form-label-sm">Nội dung gửi</label>
+        <div class="col-sm-10">
+          <textarea type="text" class="form-control form-control-sm" id="txtContent" placeholder="Nội dung cuộc gửi" required
+            [(ngModel)]="smsForm.content" name="content" #content="ngModel"></textarea>
+
+          <div class="fv-plugins-message-container" *ngIf="content.invalid && (content.dirty || content.touched)">
+            <div data-field="txtContent" data-validator="notEmpty" class="fv-help-block" *ngIf="content.errors.required">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label col-form-label-sm">Người nhận</label>
+        <div class="col-sm-10">
+          <ng-select [clearable]="true" name="slParticipant" placeholder="Nhập để tìm kiếm" (change)="onChange($event)">
+            <ng-option *ngFor="let item of listParticipant" [value]="item.id">
+              <i class="fas fa-users text-danger" *ngIf="item.participantType === participantType.Group"></i>
+              <i class="fas fa-users text-success" *ngIf="item.participantType === participantType.Department"></i>
+              <i class="fas fa-user text-primary"  *ngIf="item.participantType === participantType.User"></i>
+              {{item.name}}
+            </ng-option>
+          </ng-select>
+
+          <table class="table table-bordered mt-2">
+            <thead>
+              <tr>
+                <th style="width: 50px">
+                  STT
+                </th>
+                <th>
+                  Tên đơn vị/ Họ tên
+                </th>
+                <th>
+                  Điện thoại
+                </th>
+                <th style="width: 80px" class="text-center">
+                  <a href="javascript:;" title="Thêm" (click)="addReceiver()">
+                    <i class="fas fa-plus text-primary"></i>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody *ngIf="receivers.length > 0">
+              <tr *ngFor="let item of receivers; let i = index">
+                <td class="text-center">
+                  {{i + 1}}
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="item.receiverName" name="name{{i}}" class="form-control form-control-sm" placeholder="Tên đơn vị/ Họ tên">
+                </td>
+                <td>
+                  <input type="text" [(ngModel)]="item.phoneNumber" name="phone{{i}}" class="form-control form-control-sm" placeholder="Số điện thoại">
+                </td>
+                <td class="text-center">
+                  <a href="javascript:;" title="Xóa" (click)="deleteReceiver(item)">
+                    <i class="fas fa-trash-alt text-danger"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="receivers.length === 0">
+              <tr>
+                <td colspan="4" class="p-3 text-center text-danger">
+                  Không có dữ liệu!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </form>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

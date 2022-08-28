@@ -1,0 +1,157 @@
+<app-portlet>
+    <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+    <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+    <app-portlet-header [title]="'Quản Lý Đơn Vị'" [class]="'card-head-lg'">
+        <ng-container ktPortletTools>
+            <button *ngIf="showCreateBtn" [routerLink]="['./add']" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                {{ "COMMON.BUTTON_ADD" | translate }}
+            </button>
+        </ng-container>
+    </app-portlet-header>
+    <!-- end::Header -->
+
+    <!-- start::Body (attribute: ktPortletBody) -->
+    <app-portlet-body>
+        <!-- <div class="d-flex justify-content-between p-2">
+            <div class="form-group form-inline">
+                <div class="input-search">
+                    <input class="form-control mr-2" type="text" name="searchTerm" #searchInput
+                        placeholder="Nhập tiêu đề..." (keyup.enter)="loadData()" />
+                    <i class="fa fa-times" (click)="searchInput.value=''"></i>
+                </div>
+
+                <button class="btn btn-success" (click)="loadData()">
+                    <i class="fas fa-search"></i>
+                    {{ "COMMON.BUTTON_SEARCH" | translate }}
+                </button>
+            </div>
+            <select class="custom-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="loadData()">
+                <option [ngValue]="10">
+                    10 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+                </option>
+                <option [ngValue]="30">
+                    30 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+                </option>
+                <option [ngValue]="50">
+                    50 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+                </option>
+                <option [ngValue]="100">
+                    100 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+                </option>
+            </select>
+        </div> -->
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Số thứ tự</th>
+                        <th scope="col" sortable="Title" (sort)="onSort($event)">Tiêu đề</th>
+                        <th scope="col" sortable="IsActive" (sort)="onSort($event)" class="text-center">Hiển thị</th>
+                        <th scope="col" sortable="CreatedDate" (sort)="onSort($event)">Ngày tạo</th>
+                        <th scope="col">{{ "COMMON.ACTION_COLUME" | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of organizationTree; let i = index">
+                        <tr [id]="'parent-'+i">
+                            <th scope="row">                                
+                                {{ i + 1 }}
+                            </th>
+                            <td [ngStyle]="item.subOrganizeList != null && {'cursor': 'pointer'}" (click)="showRows(i, -1)">{{ item.name }} <span *ngIf="item.subOrganizeList != null" title="Xem danh sách đơn vị trực thuộc" style="color: red;">(<sup>*</sup>)</span></td>
+                            <td class="text-center">
+                                <span class="text-success" *ngIf="item.isActive">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                </span>
+    
+                                <span class="text-danger" *ngIf="!item.isActive">
+                                    <i class="fas fa-exclamation-triangle text-danger"></i>
+                                </span>
+    
+                            </td>
+                            <td>{{ item.createdDate | date: "dd/MM/yyyy" }}</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button *ngIf="showEditBtn" class="btn btn-sm btn-primary" (click)="edit(item.organizeId)">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button *ngIf="showDeleteBtn" class="btn btn-sm btn-danger" (click)="delete(item)">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <ng-container *ngFor="let subItem of item.subOrganizeList; let j = index">
+                            <tr style="display: none;"  class="child-of-{{i}}" id="parent-{{i}}-{{j}}">
+                                <th scope="row">{{ i + 1 }}.{{j+1}}</th>
+                                <td [ngStyle]="subItem.subOrganizeList != null && {'cursor': 'pointer'}" (click)="showRows(i, j)" >-&nbsp;-&nbsp;{{ subItem.name }} <span *ngIf="subItem.subOrganizeList != null" title="Xem danh sách đơn vị trực thuộc"
+                                    style="color: red;">(<sup>*</sup>)</span></td>
+                                <td class="text-center">
+                                    <span class="text-success" *ngIf="subItem.isActive">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </span>
+                                
+                                    <span class="text-danger" *ngIf="!subItem.isActive">
+                                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                                    </span>
+                                
+                                </td>
+                                <td>{{ subItem.createdDate | date: "dd/MM/yyyy" }}</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button class="btn btn-sm btn-primary" (click)="edit(subItem.organizeId)">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" (click)="delete(subItem)">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="display: none;" class="child-of-{{i}}-{{j}} child-of-{{i}}" *ngFor="let subItem2 of subItem.subOrganizeList; let z = index">
+                                <th scope="row">{{ i + 1 }}.{{j+1}}.{{z+1}}</th>
+                                <td>-&nbsp;-&nbsp;-&nbsp;-&nbsp;{{ subItem2.name }}</td>
+                                <td class="text-center">
+                                    <span class="text-success" *ngIf="subItem2.isActive">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </span>
+                            
+                                    <span class="text-danger" *ngIf="!subItem2.isActive">
+                                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                                    </span>
+                            
+                                </td>
+                                <td>{{ subItem2.createdDate | date: "dd/MM/yyyy" }}</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button class="btn btn-sm btn-primary" (click)="edit(subItem2.organizeId)">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" (click)="delete(subItem2)">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between p-2">
+            <!-- <ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize"
+                (pageChange)="loadData()">
+            </ngb-pagination>
+            <div class="page-per-total">
+                Hiển thị {{ count }} / {{ totalCount }} bản ghi
+            </div> -->
+            <div>
+                <b style="color: red;">(<sup>*</sup>)</b> <span> &nbsp; Đơn vị có đơn vị con trực thuộc, chọn vào để xem</span>
+            </div>
+            <div></div>
+        </div>
+    </app-portlet-body>
+    <!-- end::Body -->
+</app-portlet>
+

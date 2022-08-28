@@ -1,0 +1,108 @@
+<!-- <p>qr-test works!</p>
+<img style="width: 200px;" src="{{src}}" alt="">
+
+<a href="http://localhost:8000/api/schedules/GetQRCodeByScheduleId/11" target="_blank" class="btn btn-primary">Click here</a> -->
+
+<div class="container">
+    <div class="row">
+        <h2 class="top-title pl-3 pr-3 pl-sm-0 pr-sm-0 mt-4 mb-4 font-weight-bold">
+            {{scheduleInfo?.scheduleTitle }}
+        </h2>
+        <span><a href="{{'/scheduler/schedule-detail/?sid=' + scheduleInfo?.scheduleId}}"><i style="font-size: 16px;">Xem chi tiết cụ thể tại đây</i></a></span>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="card w-100">
+            <div class="card-body">
+                <div class="statistics-card statistics-card-2">
+                    <div class="statistics-card__item">
+                        <div class="title">
+                            <img src="assets/img/icon-calender.png" alt="thoi gian">
+                            Thời gian
+                        </div>
+                        <div class="content font-weight-bold">                            
+                            <p>
+                                {{'Từ ' + timeAndDate}}
+                            </p>
+                            <p>
+                                {{'Đến ' + timeAndDateEnd }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="statistics-card__item">
+                        <div class="title">
+                            <img src="assets/img/icon-map-pin.png" alt="Địa điểm">
+                            Địa điểm
+                        </div>
+                        <div class="content font-weight-bold">{{scheduleInfo?.scheduleLocation == null || scheduleInfo?.scheduleLocation == '' ? scheduleInfo?.otherLocation : scheduleInfo?.scheduleLocation}}</div>
+                    </div>
+                    <div class="statistics-card__item">
+                        <div class="title">
+                            <img src="assets/img/icon-group.png" alt="chủ trì">
+                            Chủ trì
+                        </div>
+                        <div class="content font-weight-bold">{{hostName}}</div>
+                    </div>  
+                    <!-- <div class="statistics-card__item">
+                        <div class="title">
+                            <img src="assets/img/icon-team.png" alt="Đơn vị báo cáo">
+                            Đơn vị báo cáo
+                        </div>
+                        <div class="content font-weight-bold">{{organizeName}}</div>
+                    </div>
+                    <div class="statistics-card__item">
+                        <div class="title">
+                            <img src="assets/img/icon-calender.png" alt="Đơn vị liên quan">
+                            Đơn vị liên quan
+                        </div>
+                        <div class="content font-weight-bold">{{organizeName}}</div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="p-2 col-md-12">
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th colspan="2" class="d-flex justify-content-between bg-secondary text-uppercase font-weight-bold">
+                    <p>Danh sách tài liệu phiên họp</p>
+                    <button ngbTooltip="Ẩn/Hiện danh sách" (click)="hideAndShow('.alldocs-area')"
+                        style="background: none; border: none; border-radius: 50%; color: black;">Hiện/Ẩn danh sách</button>
+                </th>
+            </tr>            
+        
+            <tr class="alldocs-area">
+                <td class="w-100">
+                    <table class="table table-striped">
+                        <thead class="thead-light">
+                            <th>STT</th>
+                            <th>Tên tài liệu</th>                            
+                            <!-- <th>Ngày xuất bản</th>
+                            <th>Mô tả</th> -->
+                            <!-- <th>Tải về</th>                             -->
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let doc of scheduleFilesAttachment; let i = index">
+                                <td>{{i+1}}</td>
+                                <td class="docLink"><a class="docLink" target="_blank" href={{doc.filePath}}>{{doc.fileName}}</a></td>                                
+                                <!-- <td [width]="300">{{doc.releaseDate}}</td>
+                                <td>{{doc.quote}}</td> -->
+                                <!-- <td>
+                                    <div class="d-flex justify-content-around font-smaller">
+                                        <i (click)="showDoc(doc.name)" class="fa fa-eye" aria-hidden="true" title="Xem tài liệu"></i>
+                                        <i (click)="downDoc()" class="fa fa-download" aria-hidden="true" title="Tải tài liệu"></i>
+                                        <i (click)="shareDoc()" class="fa fa-share" aria-hidden="true" title="Chia sẻ file"></i>
+                                    </div>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<!--begin::Notifications-->
+<div ngbDropdown placement="bottom-right" autoClose="outside" class="dropdown dropdown-fluid">
+	<!--begin::Toggle-->
+	<div ngbDropdownToggle class="topbar-item">
+		<ng-container *ngIf="useSVG">
+			<div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1 pulse pulse-primary">
+				<span class="svg-icon svg-icon-xl svg-icon-primary" [inlineSVG]="icon"></span>
+				<span class="pulse-ring"></span>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="!useSVG">
+			<i [ngClass]="icon"></i>
+		</ng-container>
+	</div>
+	<!--end::Toggle-->
+
+
+</div>
+<!--end::Notifications-->

@@ -1,0 +1,45 @@
+<div id="myModal" class="modal" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Thêm mới lịch cá nhân</h4>
+        <button type="button" class="close" (click)="toggleForm(2)">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form #f="ngForm" (ngSubmit)="onSubmit(f)" [noValidate]="false">
+          <div class="form-group">
+            <label for="title">Tiêu đề</label>
+            <input class="form-control" type="text" name="title" id="title" ngModel required="">
+          </div>
+          <div class="form-group">
+            <label for="content">Nội dung</label>
+            <!-- <ckeditor name="content" id="content" tagName="textarea" [editor]="Editor"></ckeditor> -->
+            <textarea name="content" id="content" class="form-control" style="min-height: 150px;" ngModel></textarea>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="startDate">Bắt đầu</label>
+                <input class="form-control" type="datetime-local" name="startDate" id="startDate" ngModel required>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="endDate">Kết thúc</label>
+                <input class="form-control" type="datetime-local" name="endDate" id="endDate" ngModel required>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn custom-btn mr-1">Lưu</button><button type="button" class="btn custom-btn btn-outline " (click)="toggleForm(2)">Đóng</button>
+          </div>          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

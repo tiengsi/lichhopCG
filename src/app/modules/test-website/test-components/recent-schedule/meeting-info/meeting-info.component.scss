@@ -1,0 +1,43 @@
+.info-block {
+  padding: 3px 6px;
+  margin: 3px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  box-shadow: 1px 0.5px #999;
+  border: none;
+}
+
+.info-block-primary {
+  background-color: #27ae60;
+}
+
+.info-block-danger {
+  background-color: #e74c3c;
+}
+
+.td-text{
+  color: white;
+  font-weight: bold;
+  padding: 2px 5px;  
+  border-radius: 5px;  
+}
+.td-time{
+  background-color: #e74c3c;
+}
+
+.td-venue{
+  background-color: #f1c40f;
+}
+
+.td-host{
+  background-color: #27ae60;
+}
+
+.td-report{
+  background-color: #e67e22;
+}
+
+.td-associate{
+  background-color: #3498db;
+}

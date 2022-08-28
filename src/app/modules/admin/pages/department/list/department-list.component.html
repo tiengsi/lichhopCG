@@ -1,0 +1,134 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <app-portlet-header [title]="'Quản Lý phòng ban'" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button *ngIf="showCreateBtn" [routerLink]="['./add']" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        {{ "COMMON.BUTTON_ADD" | translate }}
+      </button>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <div class="d-flex justify-content-between p-2">
+      <div class="form-group form-inline">
+        <div class="input-search">
+          <input
+            class="form-control mr-2"
+            type="text"
+            name="searchTerm"
+            #searchInput
+            placeholder="Nhập tên phòng ban..."
+            (keyup.enter)="loadDepartment()"
+          />
+          <i class="fa fa-times" (click)="searchInput.value = ''"></i>
+        </div>
+
+        <button class="btn btn-success" (click)="loadDepartment()">
+          <i class="fas fa-search"></i>
+          {{ "COMMON.BUTTON_SEARCH" | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col" sortable="Name" (sort)="onSort($event)">
+              Tên phòng ban
+            </th>
+            <th scope="col" sortable="ShortName" (sort)="onSort($event)">
+              Tên viết tắt
+            </th>
+            <th scope="col" sortable="Adress" (sort)="onSort($event)">
+              Địa chỉ
+            </th>
+            <th scope="col" sortable="Email" (sort)="onSort($event)">Email</th>
+            <th scope="col" sortable="PhoneNumber" (sort)="onSort($event)">
+              Điện thoại
+            </th>
+            <th scope="col" sortable="Fax" (sort)="onSort($event)">Fax</th>
+            <th scope="col" class="text-center">Người đại diện</th>
+            <th
+              scope="col"
+              class="text-center"
+              sortable="SortOrder"
+              (sort)="onSort($event)"
+            >
+              Thứ tự
+            </th>
+            <th scope="col" class="text-center">Hiển thị</th>
+            <th scope="col">{{ "COMMON.ACTION_COLUME" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of departments; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ item.name }}</td>
+            <td>{{ item.shortName }}</td>
+            <td>{{ item.adress }}</td>
+            <td>{{ item.email }}</td>
+            <td>{{ item.phoneNumber }}</td>
+            <td>{{ item.fax }}</td>
+            <td>
+              <span class="text-left">{{ item.representative }}</span>
+              <button
+                class="btn btn-sm text-left float-right"
+                (click)="openRepresentativeModal(item)"
+                title="Đổi người đại diện"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+            </td>
+            <td class="text-center">
+              <input
+                type="text"
+                class="form-control text-center"
+                title="Nhấn enter để cập nhật"
+                style="width: 50px"
+                [(ngModel)]="item.sortOrder"
+                (keyup.enter)="updateSortOrder(item)"
+              />
+            </td>
+            <td class="text-center">
+              <span class="text-success" *ngIf="item.isActive">
+                <i class="fas fa-check-circle text-success"></i>
+              </span>
+
+              <span class="text-danger" *ngIf="!item.isActive">
+                <i class="fas fa-exclamation-triangle text-danger"></i>
+              </span>
+            </td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button
+                *ngIf="showEditBtn"
+                  class="btn btn-sm btn-primary"
+                  (click)="editDepartment(item.id)"
+                >
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button
+                *ngIf="showDeleteBtn"
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteDepartment(item)"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between p-2">
+      <div class="page-per-total">Tổng {{ departments.length }} bản ghi</div>
+    </div>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

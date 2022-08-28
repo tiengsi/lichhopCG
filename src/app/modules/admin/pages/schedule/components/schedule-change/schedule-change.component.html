@@ -1,0 +1,135 @@
+<div class="modal-header">
+  <h4 class="modal-title">Dời lịch họp lúc {{schedule.scheduleTime}} ngày {{lableScheduleDate}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="closeModal(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form #scheduleForm="ngForm">
+
+    <div class="form-group row">
+      <label for="slCategory" class="col-sm-2 col-form-label col-form-label-sm">Người chủ trì</label>
+      <div class="col-sm-4 pt-2">
+        {{schedule.officerName}}
+      </div>
+      <label for="slCategory" class="col-sm-2 col-form-label col-form-label-sm">Ngày họp</label>
+      <div class="col-sm-4 pt-2">
+        <b class="text-danger">{{lableScheduleDate}} Lúc {{schedule.scheduleTime}}</b>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="slCategory" class="col-sm-2 col-form-label col-form-label-sm">Tiêu đề</label>
+      <div class="col-sm-10  pt-2">
+        {{schedule.scheduleTitle}}
+      </div>
+    </div>
+
+    <h4>Thông tin dời lịch</h4>
+
+    <div class="form-group row">
+      <label for="txtScheduleDate" class="col-sm-2 col-form-label col-form-label-sm" style="padding-top: 46px;">Ngày / Giờ</label>
+        <div class="col-sm-3">
+          <div class="input-group" style="margin-top: 38px;">
+            <input class="form-control" id="txtScheduleDate" placeholder="Năm-Tháng-Ngày" required name="dp" name="name"
+              [(ngModel)]="scheduleDate" #name="ngModel" ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+                <i class="fas fa-calendar-week"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="fv-plugins-message-container" *ngIf="name.invalid && (name.dirty || name.touched)">
+            <div data-field="txtContent" data-validator="notEmpty" class="fv-help-block" *ngIf="name.errors.required">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-7">
+          <ngb-timepicker [(ngModel)]="scheduleTime" name="scheduleTime" [minuteStep]="minuteStep"></ngb-timepicker>
+        </div>
+    </div>
+
+
+
+    <div class="form-group row">
+      <label for="txtPosition" class="col-sm-2 col-form-label col-form-label-sm">Chọn địa điểm</label>
+      <div class="col-sm-10">
+        <div class="d-flex">
+          <ng-select [(ngModel)]="schedule.locationId" [clearable]="false" class="mr-2" style="width: 340px" name="locationId" #id="ngModel">
+            <ng-option *ngFor="let item of locations" [value]="item.id">{{item.title}}</ng-option>
+          </ng-select>
+          <input type="text" class="form-control" id="txtOtherPosition" placeholder="Địa điểm tổ chức khác"
+          [(ngModel)]="schedule.otherLocation" name="txtOtherPosition">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="txtPosition" class="col-sm-2 col-form-label col-form-label-sm">Lý do</label>
+      <div class="col-sm-10">
+        <textarea type="text" class="form-control form-control-sm" id="txtContent" placeholder="Lý do dời lịch" required
+          [(ngModel)]="schedule.reasonChangeSchedule" name="reasonChangeSchedule" #reasonChangeSchedule="ngModel"></textarea>
+
+        <div class="fv-plugins-message-container" *ngIf="reasonChangeSchedule.invalid && (reasonChangeSchedule.dirty || reasonChangeSchedule.touched)">
+          <div data-field="txtContent" data-validator="notEmpty" class="fv-help-block" *ngIf="reasonChangeSchedule.errors.required">
+            {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="txtFullName" class="col-sm-2 col-form-label col-form-label-sm">Nội dung họp</label>
+      <div class="col-sm-10">
+        <!-- <textarea type="text" class="form-control form-control-sm" id="txtContent" placeholder="Nội dung cuộc họp"
+          [(ngModel)]="schedule.scheduleContent" name="scheduleContent" #scheduleContent="ngModel"></textarea> -->
+
+          <angular-editor
+            [(ngModel)]="schedule.scheduleContent" name="scheduleContent" #scheduleContent="ngModel" placeholder="Nội dung cuộc họp"
+            [config]="config"
+          ></angular-editor>
+
+        <!-- <div class="fv-plugins-message-container" *ngIf="scheduleContent.invalid && (scheduleContent.dirty || scheduleContent.touched)">
+          <div data-field="txtContent" data-validator="notEmpty" class="fv-help-block" *ngIf="scheduleContent.errors.required">
+            {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="chkIsActive" class="col-sm-2 col-form-label col-form-label-sm"></label>
+      <div class="col-sm-10 d-flex">
+        <div class="form-check mr-5">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="schedule.isSendEmail" name="isSendEmail">
+          <label class="form-check-label" for="flexCheckDefault">
+            Gửi Email
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="schedule.iSendSMS" name="isSendSMS">
+          <label class="form-check-label" for="flexCheckDefault">
+            Gửi SMS
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="schedule.iSendSMS">
+      <label for="slBrandname" class="col-sm-2 col-form-label col-form-label-sm">Brand Name gửi thử mời</label>
+      <div class="col-sm-10">
+        <ng-select [(ngModel)]="schedule.brandNameId" [clearable]="false" name="id" #id="ngModel">
+          <ng-option *ngFor="let item of brandNames" [value]="item.brandNameId">{{
+            item.branchName
+            }}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="closeModal(false)"><i class="fas fa-times"></i>Đóng</button>
+  <button type="button" class="btn btn-primary" [disabled]="!scheduleForm.form.valid" (click)="onSubmit()"><i class="far fa-save"></i>Lưu và gửi thư</button>
+</div>

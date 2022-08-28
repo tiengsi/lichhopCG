@@ -1,0 +1,134 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="(isModify ? 'COMMON.BUTTON_EDIT' : 'COMMON.BUTTON_ADD') | translate" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button class="btn btn-secondary mr-2" [routerLink]="['/admin/department']">
+        <i class="fas fa-chevron-left"></i>
+        {{ "COMMON.BUTTON_CANCEL" | translate }}
+      </button>
+      <button class="btn btn-primary" (click)="onCreate()" [disabled]="!form.valid" *ngIf="!isModify && showCreateBtn">
+        <i class="far fa-save"></i>
+        {{ "COMMON.BUTTON_SAVE" | translate }}
+      </button>
+      <button class="btn btn-primary" (click)="onSave()" [disabled]="!form.valid" *ngIf="isModify && showEditBtn">
+        <i class="far fa-save"></i>
+        {{ "COMMON.BUTTON_EDIT_SAVE" | translate }}
+      </button>
+    </ng-container>
+  </app-portlet-header>`
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <form [formGroup]="form">
+      <div class="form-group row">
+        <label for="txtTitle" class="col-sm-2 col-form-label col-form-label-sm">Tên phòng ban</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="Tên phòng ban" formControlName="name" />
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('name', 'required')">
+            <div data-field="name" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('name', 'maxLength')">
+            <div data-field="name" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.MAX_LENGTH_FIELD" | translate }} 500
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtShortName" class="col-sm-2 col-form-label col-form-label-sm">Tên viết tắt</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control form-control-sm" id="txtShortName" placeholder="Tên viết tắt"
+            formControlName="shortName" />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="slCategory" class="col-sm-2 col-form-label col-form-label-sm">Thuộc phòng ban</label>
+        <div class="col-sm-10">
+          <ng-select [clearable]="false" id="slUser" formControlName="parentId">
+            <ng-option *ngFor="let item of parentDepartments" [value]="item.id">
+              {{item.name}}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="form-group row" *ngIf="isModify">
+        <label for="txtTitle" class="col-sm-2 col-form-label col-form-label-sm">Người đại diện nhận tin nhắn</label>
+        <div class="col-sm-10">
+          <ng-select [clearable]="false" id="slRepresentative" [multiple]="true" formControlName="userRepresentative" placeholder="Người đại diện nhận tin nhắn">
+            <ng-option *ngFor="let item of userRepresentative" [value]="item.id">{{item.fullName}}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtTitle" class="col-sm-2 col-form-label col-form-label-sm">Địa chỉ</label>
+        <div class="col-sm-10">
+          <textarea type="text" class="form-control" placeholder="Địa chỉ" formControlName="adress"></textarea>
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('adress', 'maxLength')">
+            <div data-field="adress" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.MAX_LENGTH_FIELD" | translate }} 1000
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtTitle" class="col-sm-2 col-form-label col-form-label-sm">Điện thoại</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="Điện thoại" formControlName="phoneNumber" />
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('phoneNumber', 'maxlength')">
+            <div data-field="phoneNumber" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.MAX_LENGTH_FIELD" | translate }} 40
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtTitle" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="Email" formControlName="email" />
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('email', 'email')">
+            <div data-field="email" data-validator="notEmpty" class="fv-help-block">
+              Email không đúng định dạng
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtTitle" class="col-sm-2 col-form-label col-form-label-sm">Fax</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="Fax" formControlName="fax" />
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('fax', 'maxlength')">
+            <div data-field="fax" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.MAX_LENGTH_FIELD" | translate }} 20
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label col-form-label-sm">Thứ tự</label>
+        <div class="col-sm-10 text-left">
+          <input type="text" class="form-control" style="width: 60px" formControlName="sortOrder" />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="chkIsActive" class="col-sm-2 col-form-label col-form-label-sm">Hiển thị</label>
+        <div class="col-sm-10 text-left">
+          <input type="checkbox" class="form-control-sm" id="chkIsActive" formControlName="isActive" />
+        </div>
+      </div>
+    </form>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

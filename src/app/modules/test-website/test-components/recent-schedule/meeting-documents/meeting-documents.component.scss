@@ -1,0 +1,27 @@
+.sm-btn {
+  text-align: center;
+  background-color: orange;
+  color: white;
+  border: none;
+  width: 40px;
+  border-radius: 5px;
+}
+
+.fa{
+  cursor: pointer;
+}
+
+.docLink{
+  cursor: pointer;  
+}
+
+.docLink:hover{
+  color: #2980b9;
+}
+
+a{
+  color: black;
+}
+a:visited{
+  color:black;
+}

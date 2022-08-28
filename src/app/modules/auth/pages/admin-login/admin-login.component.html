@@ -1,0 +1,147 @@
+<!--begin::Signin-->
+<div class="login-form login-signin py-11">
+  <!-- <app-auth-notice></app-auth-notice> -->
+  <!--begin::Form-->
+  <form
+    class="form"
+    [formGroup]="loginForm"
+    novalidate="novalidate"
+    id="kt_login_signin_form"
+  >
+    <!--begin::Title-->
+    <div class="text-center pb-8">
+      <h2 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">
+        {{ "AUTH.LOGIN.TITLE" | translate }}
+      </h2>
+    </div>
+    <!--end::Title-->
+
+    <!--begin::Form group-->
+    <div class="form-group">
+      <label class="font-size-h6 font-weight-bolder text-dark">{{
+        "AUTH.INPUT.USERNAME" | translate
+      }}</label>
+      <input
+        class="form-control form-control-solid h-auto py-7 px-6 rounded-lg"
+        type="text"
+        name="username"
+        autocomplete="off"
+        formControlName="username"
+      />
+      <div
+        class="fv-plugins-message-container"
+        *ngIf="isControlHasError('username', 'required')"
+      >
+        <div
+          data-field="username"
+          data-validator="notEmpty"
+          class="fv-help-block"
+        >
+          {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+        </div>
+      </div>
+
+      <div
+        class="fv-plugins-message-container"
+        *ngIf="isControlHasError('username', 'minlength')"
+      >
+        <div
+          data-field="username"
+          data-validator="notEmpty"
+          class="fv-help-block"
+        >
+          {{ "AUTH.VALIDATION.MIN_LENGTH_FIELD" | translate }} 3
+        </div>
+      </div>
+
+      <div
+        class="fv-plugins-message-container"
+        *ngIf="isControlHasError('username', 'maxlength')"
+      >
+        <div
+          data-field="username"
+          data-validator="notEmpty"
+          class="fv-help-block"
+        >
+          {{ "AUTH.VALIDATION.MAX_LENGTH_FIELD" | translate }} 320
+        </div>
+      </div>
+    </div>
+    <!--end::Form group-->
+
+    <!--begin::Form group-->
+    <div class="form-group">
+      <div class="d-flex justify-content-between mt-n5">
+        <label class="font-size-h6 font-weight-bolder text-dark pt-5">{{
+          "AUTH.INPUT.PASSWORD" | translate
+        }}</label>
+      </div>
+
+      <input
+        class="form-control form-control-solid h-auto py-7 px-6 rounded-lg"
+        type="password"
+        name="password"
+        autocomplete="off"
+        formControlName="password"
+      />
+
+      <div
+        class="fv-plugins-message-container"
+        *ngIf="isControlHasError('password', 'required')"
+      >
+        <div
+          data-field="password"
+          data-validator="notEmpty"
+          class="fv-help-block"
+        >
+          {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+        </div>
+      </div>
+
+      <div
+        class="fv-plugins-message-container"
+        *ngIf="isControlHasError('password', 'minlength')"
+      >
+        <div
+          data-field="password"
+          data-validator="notEmpty"
+          class="fv-help-block"
+        >
+          {{ "AUTH.VALIDATION.MIN_LENGTH_FIELD" | translate }} 3
+        </div>
+      </div>
+
+      <div
+        class="fv-plugins-message-container"
+        *ngIf="isControlHasError('password', 'maxlength')"
+      >
+        <div
+          data-field="password"
+          data-validator="notEmpty"
+          class="fv-help-block"
+        >
+          {{ "AUTH.VALIDATION.MAX_LENGTH_FIELD" | translate }} 16
+        </div>
+      </div>
+    </div>
+    <!--end::Form group-->
+
+    <!--begin::Action-->
+    <div class="text-center pt-2">
+      <button
+        id="kt_login_signin_submit"
+        class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3"
+        (click)="submit()"
+        [ngClass]="{
+          'spinner spinner-right spinner-md spinner-light': loading
+        }"
+        [disabled]="loading"
+      >
+        {{ "AUTH.LOGIN.BUTTON" | translate }}
+      </button>
+    </div>
+    <!--end::Action-->
+  </form>
+  <!--end::Form-->
+</div>
+<!--end::Signin-->

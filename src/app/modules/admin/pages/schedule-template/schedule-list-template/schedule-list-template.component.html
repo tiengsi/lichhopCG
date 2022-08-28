@@ -1,0 +1,375 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="'Quản Lý Lịch Họp Mẫu'" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <div class="form-row align-items-center">
+        <div class="col-auto">
+          <button *ngIf="showCreateBtn" (click)="redirectAddPage()" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            {{ "COMMON.BUTTON_ADD" | translate }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <div class="d-flex justify-content-between">
+      <div class="form-group form-inline">
+        <ng-select
+          [(ngModel)]="hostSelected"
+          [clearable]="false"
+          style="width: 240px"
+        >
+          <ng-option *ngFor="let item of hosts" [value]="item.id">{{
+            item.fullName
+          }}</ng-option>
+        </ng-select>
+
+        <ng-select
+          [(ngModel)]="activeSelected"
+          [clearable]="false"
+          class="ml-2"
+          style="width: 200px"
+        >
+          <ng-option *ngFor="let item of lstActive" [value]="item.value">{{
+            item.label
+          }}</ng-option>
+        </ng-select>
+
+        <ng-select
+          [(ngModel)]="statusSelected"
+          [clearable]="false"
+          class="ml-2"
+          style="width: 240px"
+        >
+          <ng-option *ngFor="let item of lstStatus" [value]="item.value">{{
+            item.label
+          }}</ng-option>
+        </ng-select>
+
+        <ng-select
+          [(ngModel)]="locationSelected"
+          [clearable]="false"
+          class="ml-2"
+          style="width: 240px"
+        >
+          <ng-option *ngFor="let item of locations" [value]="item.id">{{
+            item.title
+          }}</ng-option>
+        </ng-select>
+
+        <button class="btn btn-success ml-2" (click)="loadSchedule()">
+          <i class="fas fa-search"></i>
+          {{ "COMMON.BUTTON_SEARCH" | translate }}
+        </button>
+      </div>
+      <select
+        class="custom-select"
+        style="width: auto"
+        [(ngModel)]="pageSize"
+        (ngModelChange)="loadSchedule()"
+      >
+        <option [ngValue]="10">
+          10 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="30">
+          30 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="50">
+          50 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="100">
+          100 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+      </select>
+    </div>
+
+    <div class="text-center pb-3" *ngIf="!selectAllWeek">
+      Bạn chọn <b>{{ daySelectedToShow }}</b>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th class="text-center bg-secondary" style="width: 30%">
+              BUỔI SÁNG
+            </th>
+            <th class="text-center bg-secondary" style="width: 30%">
+              BUỔI CHIỀU
+            </th>
+            <th class="text-center bg-secondary" style="width: 30%">
+              BUỔI TỐI
+            </th>
+          </tr>
+        </thead>
+        <tbody *ngIf="schedules.length > 0">
+          <ng-container *ngFor="let schedule of schedules; let i = index">
+            <tr *ngIf="hasSchedule(schedule)">
+              <!--Sáng -->
+              <td class="p-1">
+                <div
+                  *ngFor="let item of schedule.morning; let i = index"
+                  class="p-2 mb-3"
+                  style="border-bottom: 1px solid #ccc"
+                >
+                  <div class="d-flex justify-content-between">
+                    <p class="text-danger">
+                      <strong>{{ item.scheduleTime }}</strong>
+                    </p>
+
+                    <div class="text-center">
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                      >
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                        <button
+                          class="btn btn-sm btn-secondary"
+                          (click)="redirectAddSchedule(item.scheduleId)"
+                          title="Sử dụng lịch họp này"
+                        >
+                          <i class="fas fa-copy"></i>
+                        </button>
+
+                        <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                        <button
+                        *ngIf="showEditBtn"
+                          class="btn btn-sm btn-primary"
+                          (click)="editSchedule(item.scheduleId)"
+                          title="Sửa lịch"
+                        >
+                          <i class="fa fa-edit"></i>
+                        </button>
+
+                        <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                        <button
+                        *ngIf="showDeleteBtn"
+                          class="btn btn-sm btn-danger"
+                          (click)="deleteSchedule(item)"
+                          title="Xóa lịch"
+                        >
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p>
+                    <strong>{{ item.scheduleTitle }}</strong>
+                  </p>
+                  <p>
+                    <strong>Nội dung: </strong>
+                    <span
+                      *ngIf="item.scheduleContent"
+                      class="wrapper-content"
+                      id="wrapper-content-{{ item.scheduleId }}"
+                      [innerHTML]="item.scheduleContent"
+                    >
+                    </span>
+                    <a
+                      *ngIf="item.scheduleContent"
+                      class="btn-expan-all"
+                      id="btn-expan-all-{{ item.scheduleId }}"
+                      href="javascript:;"
+                      (click)="expandAll(item.scheduleId)"
+                      >Xem tất cả</a
+                    >
+                  </p>
+                  <p>
+                    <strong>Chủ trì: </strong>
+                    <span class="text-primary">{{ item.officerName }}</span>
+                  </p>
+                  <p>
+                    <strong>Chuẩn bị: </strong>
+                    <span>{{ item.departmentPrepare }}</span>
+                  </p>
+                  <p><strong>Địa điểm: </strong> {{ item.otherLocation }}</p>
+                  <p><strong>Tham dự:</strong> {{ item.participantDisplay }}</p>
+                </div>
+              </td>
+              <!--Chiều -->
+              <td class="p-1">
+                <div
+                  *ngFor="let item of schedule.afternoon; let i = index"
+                  style="border-bottom: 1px solid #ccc"
+                  class="p-2 mb-3"
+                >
+                  <div class="d-flex justify-content-between">
+                    <p class="text-danger">
+                      <strong>{{ item.scheduleTime }}</strong>
+                    </p>
+
+                    <div class="text-center">
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                      >
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                        <button
+                        *ngIf="showCreateBtn"
+                          class="btn btn-sm btn-secondary"
+                          (click)="redirectAddSchedule(item.scheduleId)"
+                          title="Sử dụng lịch họp này"
+                        >
+                          <i class="fas fa-copy"></i>
+                        </button>
+
+                        <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                        <button
+                        *ngIf="showEditBtn"
+                          class="btn btn-sm btn-primary"
+                          (click)="editSchedule(item.scheduleId)"
+                          title="Sửa lịch"
+                        >
+                          <i class="fa fa-edit"></i>
+                        </button>
+
+                        <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                        <button
+                        *ngIf="showDeleteBtn"
+                          class="btn btn-sm btn-danger"
+                          (click)="deleteSchedule(item)"
+                          title="Xóa lịch"
+                        >
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p>
+                    <strong>{{ item.scheduleTitle }}</strong>
+                  </p>
+                  <p>
+                    <strong>Nội dung: </strong>
+                    <span
+                      *ngIf="item.scheduleContent"
+                      class="wrapper-content"
+                      id="wrapper-content-{{ item.scheduleId }}"
+                      [innerHTML]="item.scheduleContent"
+                    >
+                    </span>
+                    <a
+                      *ngIf="item.scheduleContent"
+                      class="btn-expan-all"
+                      id="btn-expan-all-{{ item.scheduleId }}"
+                      href="javascript:;"
+                      (click)="expandAll(item.scheduleId)"
+                      >Xem tất cả</a
+                    >
+                  </p>
+                  <p>
+                    <strong>Chủ trì: </strong>
+                    <span class="text-primary">{{ item.officerName }}</span>
+                  </p>
+                  <p>
+                    <strong>Chuẩn bị: </strong>
+                    <span>{{ item.departmentPrepare }}</span>
+                  </p>
+                  <p><strong>Địa điểm: </strong> {{ item.otherLocation }}</p>
+                  <p><strong>Tham dự:</strong> {{ item.participantDisplay }}</p>
+                </div>
+              </td>
+              <!--Tối -->
+              <td class="p-1">
+                <div
+                  *ngFor="let item of schedule.evening; let i = index"
+                  class="p-2 mb-3"
+                  style="border-bottom: 1px solid #ccc"
+                >
+                  <div class="d-flex justify-content-between">
+                    <p class="text-danger">
+                      <strong>{{ item.scheduleTime }}</strong>
+                    </p>
+
+                    <div class="text-center">
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                      >
+                        <button
+                          class="btn btn-sm btn-secondary"
+                          (click)="redirectAddSchedule(item.scheduleId)"
+                          title="Sử dụng lịch họp này"
+                          *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                        >
+                          <i class="fas fa-copy"></i>
+                        </button>
+
+                        <button
+                          class="btn btn-sm btn-primary"
+                          (click)="editSchedule(item.scheduleId)"
+                          title="Sửa lịch"
+                          *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                        >
+                          <i class="fa fa-edit"></i>
+                        </button>
+
+                        <button
+                          class="btn btn-sm btn-danger"
+                          (click)="deleteSchedule(item)"
+                          title="Xóa lịch"
+                          *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                        >
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p>
+                    <strong>{{ item.scheduleTitle }}</strong>
+                  </p>
+                  <p>
+                    <strong>Nội dung: </strong>
+                    <span
+                      *ngIf="item.scheduleContent"
+                      class="wrapper-content"
+                      id="wrapper-content-{{ item.scheduleId }}"
+                      [innerHTML]="item.scheduleContent"
+                    >
+                    </span>
+                    <a
+                      *ngIf="item.scheduleContent"
+                      class="btn-expan-all"
+                      id="btn-expan-all-{{ item.scheduleId }}"
+                      href="javascript:;"
+                      (click)="expandAll(item.scheduleId)"
+                      >Xem tất cả</a
+                    >
+                  </p>
+                  <p>
+                    <strong>Chủ trì: </strong>
+                    <span class="text-primary">{{ item.officerName }}</span>
+                  </p>
+                  <p>
+                    <strong>Chuẩn bị: </strong>
+                    <span>{{ item.departmentPrepare }}</span>
+                  </p>
+                  <p><strong>Địa điểm: </strong> {{ item.otherLocation }}</p>
+                  <p><strong>Tham dự:</strong> {{ item.participantDisplay }}</p>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+        <tbody *ngIf="schedules.length === 0">
+          <tr>
+            <td colspan="4" class="p-3 text-danger text-center">
+              Không có dữ liệu
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

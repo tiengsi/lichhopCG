@@ -1,0 +1,37 @@
+<div class="container" class="pb-5 pl-5 pr-5">
+
+  <nav aria-label="breadcrumb" class="mt-5">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ categoryName }}</li>
+    </ol>
+  </nav>
+
+  <div *ngFor="let item of posts" class="row mt-5 mb-5">
+    <div class="col">
+      <a [routerLink]="'/tin/chi-tiet/' + categoryCode + '/' + item.postId" title="{{item.title}}">
+        <img src="{{ item.imagePath }}" alt="{{item.title}}" title="{{item.title}}" class="img-thumbnail">
+      </a>
+    </div>
+    <div class="col-10">
+      <a [routerLink]="'/tin/chi-tiet/' + categoryCode + '/' + item.postId" title="{{item.title}}">
+        <h6>{{item.title}}</h6>
+      </a>
+      <p class="wb-post-content">
+        {{item.description}}
+      </p>
+    </div>
+  </div>
+
+  <nav aria-label="Page navigation" *ngIf="posts.length > 0">
+    <ngb-pagination
+        [collectionSize]="totalCount"
+        [(page)]="page"
+        [pageSize]="pageSize"
+        (pageChange)="loadPostByCategory()"
+      >
+      </ngb-pagination>
+  </nav>
+</div>
+
+

@@ -1,0 +1,16 @@
+<div class="container pb-5" *ngIf="post">
+  <nav aria-label="breadcrumb" class="mt-5">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a [routerLink]="'/'">Trang chủ</a></li>
+      <li class="breadcrumb-item"><a [routerLink]="'/tin/' + post.categoryCode">{{ post.categoryName }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+    </ol>
+  </nav>
+  <div class="row">
+    <div class="col">
+      <h4>{{post.title}}</h4>
+      <div class="wb-post-detail-content" [innerHTML]="post.body">
+      </div>
+    </div>
+  </div>
+</div>

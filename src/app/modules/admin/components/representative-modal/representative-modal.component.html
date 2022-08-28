@@ -1,0 +1,18 @@
+<div class="modal-header">
+  <h4 class="modal-title">Đổi người đại diện cho {{departmentName}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="closeModal(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label>Chọn cán bộ</label>
+    <ng-select [(ngModel)]="userSelected" [clearable]="false" name="userId" #id="ngModel">
+      <ng-option *ngFor="let item of users" [value]="item.id">{{item.fullName}}</ng-option>
+    </ng-select>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="closeModal(false)"><i class="fas fa-times"></i>Đóng</button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()"><i class="far fa-save"></i>Lưu lại</button>
+</div>

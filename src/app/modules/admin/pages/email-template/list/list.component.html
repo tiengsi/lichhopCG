@@ -1,0 +1,58 @@
+<app-portlet>
+    <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+    <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+    <app-portlet-header [title]="'Quản Lý Mẫu Email'" [class]="'card-head-lg'">
+        <ng-container ktPortletTools>
+            <button *ngIf="showCreateBtn" [routerLink]="['./add']" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                {{ "COMMON.BUTTON_ADD" | translate }}
+            </button>
+        </ng-container>
+    </app-portlet-header>
+    <!-- end::Header -->
+
+    <!-- start::Body (attribute: ktPortletBody) -->
+    <app-portlet-body>        
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tiêu đề</th>
+                        <th scope="col">Loại email</th>
+                        <th scope="col" class="text-center">Trạng thái</th>                        
+                        <th scope="col">{{ "COMMON.ACTION_COLUME" | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of emailTemplates; let i = index">
+                        <th scope="row">{{ i + 1 }}</th>
+                        <td>{{ item.title }}</td>
+                        <td>{{ emailTypes[item.typeEmail] }}</td>
+                        <td class="text-center">
+                            <span class="text-success" *ngIf="item.isActvie">
+                                <i class="fas fa-check-circle text-success"></i>
+                            </span>
+
+                            <span class="text-danger" *ngIf="!item.isActvie">
+                                <i class="fas fa-exclamation-triangle text-danger"></i>
+                            </span>
+
+                        </td>                        
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button class="btn btn-sm btn-primary" *ngIf="showEditBtn" (click)="edit(item.emailTemplateId)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger disabled" *ngIf="showDeleteBtn" ngbTooltip="Không thể xóa" placement="left" >
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>        
+    </app-portlet-body>
+    <!-- end::Body -->
+</app-portlet>

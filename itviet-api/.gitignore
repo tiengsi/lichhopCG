@@ -1,0 +1,22 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+**/VisualGDB/**
+**/packages/**
+**/obj/**
+**/bin/**
+**/.vs/**
+**/*.db
+**/*.opendb
+**/*.obj
+**/*.dll
+**/Win32
+**/x64
+**/*.user
+**.zip
+**/Debug
+/software/ReaderController/IlutonSetup/Release
+/software/ReaderController/IlutonSetup64/Release/
+/software/ReaderController/IlutonSetup86/Release
+wwwroot

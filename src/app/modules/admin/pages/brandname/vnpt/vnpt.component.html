@@ -1,0 +1,68 @@
+<app-portlet>
+    <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+    <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+    <app-portlet-header [title]="'Quản Lý Viettel BrandName'" [class]="'card-head-lg'">
+        <ng-container ktPortletTools>
+            <button *ngIf="showCreateBtn" [routerLink]="['./add']" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                {{ "COMMON.BUTTON_ADD" | translate }}
+            </button>
+        </ng-container>
+    </app-portlet-header>
+    <!-- end::Header -->
+
+    <!-- start::Body (attribute: ktPortletBody) -->
+    <app-portlet-body>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Brand name</th>
+                        <th scope="col">Loại Contract</th>
+                        <th scope="col">Api Link</th>
+                        <th scope="col" class="text-center">Hiển thị</th>
+                        <th scope="col">{{ "COMMON.ACTION_COLUME" | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of VNPTs; let i = index">
+                        <th scope="row">{{ i + 1 }}</th>
+                        <td>VNPT - {{ item.branchName }}</td>
+                        <td>{{ item.contractType }}</td>
+                        <td>{{ item.apiLink }}</td>
+                        <td class="text-center">
+                            <span class="text-success" *ngIf="item.isActive">
+                                <i class="fas fa-check-circle text-success"></i>
+                            </span>
+
+                            <span class="text-danger" *ngIf="!item.isActive">
+                                <i class="fas fa-exclamation-triangle text-danger"></i>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button *ngIf="showEditBtn" class="btn btn-sm btn-primary"
+                                    (click)="edit(item.brandNameId)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button *ngIf="showDeleteBtn" class="btn btn-sm btn-danger" (click)="delete(item)">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- <div class="d-flex justify-content-between p-2">
+            <ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize"
+                (pageChange)="loadLocation()">
+            </ngb-pagination>
+            <div class="page-per-total">
+                Hiển thị {{ count }} / {{ totalCount }} bản ghi
+            </div>
+        </div> -->
+    </app-portlet-body>
+    <!-- end::Body -->
+</app-portlet>

@@ -1,0 +1,91 @@
+<div class="container" class="pb-5 pl-5 pr-5">
+  <nav aria-label="breadcrumb" class="mt-5">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Danh bạ cơ quan
+      </li>
+    </ol>
+  </nav>
+
+  <div class="d-flex justify-content-between">
+    <div class="form-row align-items-center">
+      <div class="col-auto">
+        <input
+          type="text"
+          class="form-control"
+          id="keyFilter"
+          (keyup.enter)="getAllOfficer()"
+          placeholder="Tìm kiếm theo tên cán bộ"
+          name="keyFilter"
+          [(ngModel)]="keyFilter"
+        />
+      </div>
+
+      <div class="col-auto">
+        <button class="btn btn-primary" (click)="getAllOfficer()">
+          <i class="fas fa-search"></i> Tìm kiếm
+        </button>
+      </div>
+    </div>
+
+    <div class="sort-order">
+      <select
+        class="custom-select"
+        style="width: 300"
+        [(ngModel)]="sortField"
+        (ngModelChange)="getAllOfficer()"
+      >
+        <option [ngValue]="'Name'">
+          Sắp xếp theo tên cơ quan
+        </option>
+        <option [ngValue]="'SortOrder'">
+          Sắp xếp theo thứ tự
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <ng-container
+      *ngIf="!isLoading && departmentOfficers && departmentOfficers.length > 0"
+    >
+      <app-list-subordinate #subordinate [departments]="departmentOfficers">
+        <ng-template let-officers="officers">
+          <div class="box-table p-3 mb-5">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col" width="50px">STT</th>
+                    <th scope="col">Họ và tên</th>
+                    <th scope="col">Chức vụ</th>
+                    <th scope="col">Điện thoại</th>
+                    <th scope="col">Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of officers; let i = index">
+                    <th class="text-center">{{ i + 1 }}</th>
+                    <td>{{ item.fullName }}</td>
+                    <td>{{ item.officerPosition }}</td>
+                    <td>{{ item.phoneNumber }}</td>
+                    <td>{{ item.email }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-template>
+      </app-list-subordinate>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+      <div class="load load100"></div>
+      <div class="load load100"></div>
+      <div class="load load100"></div>
+      <div class="load load100"></div>
+      <div class="load load100"></div>
+      <div class="load load100"></div>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,116 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="'COMMON.USER_TITLE_LIST_PAGE' | translate" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button *ngIf="showCreateBtn" [routerLink]="['/admin/officer/add']" class="btn btn-info mr-2">
+        <i class="fas fa-plus"></i>
+        Thêm mới cán bộ
+      </button>
+      <button *ngIf="showCreateAdminBtn" [routerLink]="['./add']" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        <!-- {{ "COMMON.BUTTON_ADD" | translate }} -->
+        Thêm mới quản trị viên
+      </button>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <div class="d-flex justify-content-between p-2">
+      <div class="form-group form-inline">
+        <div class="input-search">
+          <input class="form-control mr-2" type="text" name="searchTerm" #searchInput placeholder="{{ 'COMMON.INPUT_SEARCH'| translate}}}" (keyup.enter)="loadUsersList()"/>
+          <i class="fa fa-times" (click)="searchInput.value=''"></i>
+        </div>
+
+        <button class="btn btn-success" (click)="loadUsersList()">
+          <i class="fas fa-search"></i>
+          {{ 'COMMON.BUTTON_SEARCH' | translate}}
+        </button>
+      </div>
+      <select class="custom-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="loadUsersList()">
+        <option [ngValue]="10">10 {{ 'COMMON.ITEMS_PER_PAGE' | translate }}</option>
+        <option [ngValue]="30">30 {{ 'COMMON.ITEMS_PER_PAGE' | translate }}</option>
+        <option [ngValue]="50">50 {{ 'COMMON.ITEMS_PER_PAGE' | translate }}</option>
+        <option [ngValue]="100">100 {{ 'COMMON.ITEMS_PER_PAGE' | translate }}</option>
+      </select>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col" sortable="UserName" (sort)="onSort($event)">
+              {{ "AUTH.INPUT.USERNAME" | translate }}
+            </th>
+            <th scope="col" sortable="FullName" (sort)="onSort($event)">
+              {{ "AUTH.INPUT.FULLNAME" | translate }}
+            </th>
+            <th scope="col" sortable="area">
+              Tên viết tắt
+            </th>
+            <th scope="col">Số điện thoại</th>
+            <th scope="col" sortable="Email" (sort)="onSort($event)">Email</th>
+            <th scope="col" sortable="LastLogin" (sort)="onSort($event)">{{ "COMMON.LAST_LOGIN" | translate }}</th>
+            <th scope="col">{{ "COMMON.ROLE" | translate }}</th>
+            <th scope="col">Là người chủ trì</th>
+            <!-- <th scope="col">Hiện/Ẩn danh bạ</th> -->
+            <th scope="col">{{ "COMMON.ACTION_COLUME" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of data$ | async; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ item.userName }}</td>
+            <td>{{ item.fullName }}</td>
+            <td>{{ item.shortName }}</td>
+            <td>{{ item.phoneNumber }}</td>
+            <td>{{ item.email }}</td>
+            <td>{{ item.lastLogin | date: "medium" }}</td>
+            <td><div class="role-name" (click)="changeRole(item)" style="cursor: pointer;" title="Thay đổi">{{ changeRoleName(item.roles) }}</div></td>
+            <td class="text-center">
+              <span *ngIf="item.isHost" class="badge bg-primary text-white">V</span>
+            </td>
+            <!-- <td class="text-center">
+              <span *ngIf="item.isShow" class="badge bg-primary text-white" title="Hiện">V</span>
+              <span *ngIf="!item.isShow" class="badge bg-danger text-white" title="Ẩn">X</span>
+            </td> -->
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button *ngIf="showEditBtn" class="btn btn-sm btn-primary" (click)="editUser(item)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button *ngIf="showEditBtn && !item.roles.includes('SuperAdmin')" ngbTooltip="Reset mật khẩu" class="btn btn-sm btn-secondary" (click)="changePassword(item)">
+                  <i class="fas fa-key"></i>
+                </button>
+                <button *ngIf="showEditBtn && item.roles.includes('SuperAdmin')" ngbTooltip="Không thể reset"
+                  class="btn btn-sm btn-secondary disabled" (click)="changePassword(item)">
+                  <i class="fas fa-key"></i>
+                </button>
+                <button *ngIf="showDeleteBtn && !item.roles.includes('SuperAdmin') && !item.roles.includes('Admin')" ngbTooltip="Xóa người dùng" class="btn btn-sm btn-danger" (click)="deleteUser(item)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+                <div *ngIf="!(showDeleteBtn && !item.roles.includes('SuperAdmin') && !item.roles.includes('Admin'))" ngbTooltip="Không thể xóa"
+                  class="btn btn-sm btn-danger disabled">
+                  <i class="fas fa-trash-alt"></i>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-between p-2">
+      <ngb-pagination [collectionSize]="(total$ | async)" [(page)]="page" [pageSize]="pageSize"
+        (pageChange)="loadUsersList()">
+      </ngb-pagination>
+      <div class="page-per-total">
+        Hiển thị {{count$ | async}} / {{total$ | async}} bản ghi
+      </div>
+    </div>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

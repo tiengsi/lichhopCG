@@ -1,0 +1,91 @@
+<ng-container *ngFor="let item of departments">
+  <ng-container
+    *ngTemplateOutlet="temp; context: { $implicit: item, expanded: false }"
+  ></ng-container>
+</ng-container>
+
+<ng-template #temp let-item let-expanded="expanded">
+  <div class="d-flex">
+    <div class="svg-mark-point d-flex">
+      <div>
+        <i
+          class="far fa-caret-square-down"
+          *ngIf="
+            expanded ||
+              !item?.subDepartments?.length ||
+              expandedSubordinate[item.id];
+            else caretRight
+          "
+          (click)="toggleSubordinate(item.id, false)"
+        ></i>
+        <ng-template #caretRight>
+          <i
+            class="fas fa-caret-square-right"
+            *ngIf="
+              item?.subDepartments?.length && !expandedSubordinate[item.id]
+            "
+            (click)="toggleSubordinate(item.id, true)"
+          ></i>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="box-subordinate-content w-100">
+      <div class="subordinate-header">
+        <ng-container *ngTemplateOutlet="title"></ng-container>
+      </div>
+      <div class="subordinate-body">
+        <ng-container *ngIf="showList[item.id]">
+          <ng-template
+            *ngTemplateOutlet="
+              templateRef;
+              context: { $implicit: item, officers: item.officers }
+            "
+          >
+          </ng-template>
+        </ng-container>
+        <ng-container
+          *ngIf="
+            expanded ||
+            (item?.subDepartments?.length && expandedSubordinate[item.id])
+          "
+        >
+          <ng-container *ngFor="let child of item.subDepartments">
+            <ng-container
+              *ngTemplateOutlet="temp; context: { $implicit: child }"
+            >
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <ng-template #title>
+    <div class="d-flex justify-content-between p-3">
+      <div class="align-self-center">
+        <i class="fas fa-users"></i>
+        <span class="ml-2">
+          <strong>
+            {{
+              item.name +
+                (item.phoneNumber ? " - (SĐT: " + item.phoneNumber + ")" : "")
+                + (item.email ? " - (Email: " + item.email + ")" : "")
+            }}
+          </strong>
+        </span>
+      </div>
+      <div *ngIf="item.officers && item.officers.length > 0">
+        <a class="fs-4 fw-bold toggle-display" (click)="toggleDisplay(item.id)">
+          {{
+            showList[item.id]
+              ? "Ẩn đi"
+              : "Hiện thị " + item.officers?.length + " Cán bộ"
+          }}</a
+        >
+      </div>
+    </div>
+  </ng-template>
+
+  <svg class="position-fixed" xmlns="http://www.w3.org/2000/svg">
+    <path stroke-width="1px" stroke="#f0f0f0" [attr.d]="d"></path></svg
+></ng-template>

@@ -1,0 +1,109 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="p-1">
+      Nội dụng: {{schedule.scheduleContent}}
+    </div>
+    <div class="p-1">
+      Ngày họp: Lúc {{schedule.scheduleTime}} ngày {{schedule.scheduleDate | date: "dd/MM/yyyy"}}
+    </div>
+    <div class="p-1">
+      Người chủ trì: {{schedule.officerName}}
+    </div>
+    <div class="p-1">
+      Người địa điểm: {{schedule.otherLocation}}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="p-1">
+      Tình trạng: {{schedule.scheduleStatus | scheduleStatus}}
+    </div>
+    <div class="p-1">
+      Ngày tạo: {{schedule.createdDate | date: "dd/MM/yyyy"}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <h5 class="mt-2">Tham dự</h5>
+    <table class="table table-bordered mt-2" *ngIf="participantIsSelected.length > 0">
+      <thead>
+        <tr>
+          <th style="width: 50px">
+            STT
+          </th>
+          <th>
+            Cơ quan nhận
+          </th>
+          <th>
+            Người nhận
+          </th>
+         
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of participantIsSelected; let i = index">
+          <td class="text-center">
+            {{i + 1}}
+          </td>
+          <td>
+            {{ item.departmentName }}
+          </td>
+          <td>
+            {{ item.receiverName }}
+          </td>
+         
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h5 class="mt-2">Thành phần tham dự ngoài cơ quan</h5>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th style="width: 50px">
+            STT
+          </th>
+          <th>
+            Tên đơn vị/ Họ tên
+          </th>
+          <th>
+            Email
+          </th>
+          <th>
+            Số điện thoại
+          </th>
+          
+        </tr>
+      </thead>
+      <tbody *ngIf="otherParticipantSelected.length > 0">
+        <tr *ngFor="let item of otherParticipantSelected; let j = index; trackBy:trackByIndex;">
+          <td class="text-center">
+            {{j + 1}}
+          </td>
+          <td>
+            {{item.name}}
+          </td>
+          <td>
+            {{item.email}}
+          </td>
+          <td>
+            {{item.phoneNumber}}
+          </td>
+          
+        </tr>
+      </tbody>
+
+      <tbody *ngIf="otherParticipantSelected.length == 0">
+        <tr>
+          <td colspan="4" class="text-center text-danger">
+            Không có dữ liệu!
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,185 @@
+
+<router-outlet></router-outlet>
+<!-- <app-portlet>
+    
+    <app-portlet-header [title]="'Cấu Hình Website'" [class]="'card-head-lg'">
+        <ng-container ktPortletTools>
+            <button class="btn btn-primary" *ngIf="showCreateBtn" (click)="onSubmit()" [disabled]="!settingForm.valid">
+                <i class="far fa-save"></i>
+                {{ "COMMON.BUTTON_EDIT_SAVE" | translate }}
+            </button>
+        </ng-container>
+    </app-portlet-header>
+    
+    <app-portlet-body>
+        <form #settingForm="ngForm">
+            <div *ngIf="renderable[0] && renderable[1]">                
+                <div *ngIf="type=='viettel'">
+                    <div *ngFor="let item of viettelBrandNames">                        
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label col-form-label-sm">Brand Name <span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="slBrandNameType" (change)="onChangeBrand($event)">
+                                    <option value="viettel" [selected]="type == 'viettel'">Viettel</option>
+                                    <option value="vnpt" [selected]="type=='vnpt'" >VNPT</option>
+                                </select>
+                            </div>
+                        </div>                
+                        <div class="form-group row">
+                            <label for="contractType" class="col-sm-2 col-form-label col-form-label-sm">Contract Type<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="contractType" placeholder="Contract Type"
+                                    [(ngModel)]="item.contractType" name="contractType" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="apiUser" class="col-sm-2 col-form-label col-form-label-sm">Api User<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="apiUser" placeholder="Api User" [(ngModel)]="item.apiUser"
+                                    name="apiUser" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="apiPass" class="col-sm-2 col-form-label col-form-label-sm">Api Pass<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="apiPass" placeholder="Api Pass" [(ngModel)]="item.apiPass"
+                                    name="apiPass" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="branchName" class="col-sm-2 col-form-label col-form-label-sm">Branch Name<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="branchName" placeholder="Branch Name" [(ngModel)]="item.branchName"
+                                    name="branchName" />
+                            </div>
+                        </div>
+                        <div [hidden]="afterType == 'vnpt'" class="form-group row">
+                            <label for="cpCode" class="col-sm-2 col-form-label col-form-label-sm">CP Code<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="cpCode" placeholder="CP Code" [(ngModel)]="item.cpCode"
+                                    name="cpCode" />
+                            </div>
+                        </div>
+                        <div [hidden]="afterType == 'viettel'" class="form-group row">
+                            <label for="viettelPhone" class="col-sm-2 col-form-label col-form-label-sm">Phone Number<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="viettelPhone" placeholder="Phone Number"
+                                    name="viettelPhone" />
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div *ngIf="type=='vnpt'">                    
+                    <div *ngFor="let item of vnptBrandNames">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label col-form-label-sm">Brand Name<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="slBrandNameType2" (change)="onChangeBrand($event)">
+                                    <option class="form-control" value="viettel" [selected]="type == 'viettel'">Viettel</option>
+                                    <option class="form-control" value="vnpt" [selected]="type=='vnpt'">VNPT</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="contractType" class="col-sm-2 col-form-label col-form-label-sm">Contract Type<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="contractType" placeholder="Contract Type"
+                                    [(ngModel)]="item.contractType" name="contractType" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="apiUser" class="col-sm-2 col-form-label col-form-label-sm">Api User<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="apiUser" placeholder="Api User" [(ngModel)]="item.apiUser"
+                                    name="apiUser" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="apiPass" class="col-sm-2 col-form-label col-form-label-sm">Api Pass<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="apiPass" placeholder="Api Pass" [(ngModel)]="item.apiPass"
+                                    name="apiPass" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="branchName" class="col-sm-2 col-form-label col-form-label-sm">Branch Name<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="branchName" placeholder="Branch Name" [(ngModel)]="item.branchName"
+                                    name="branchName" />
+                            </div>
+                        </div>
+                        <div [hidden]="afterType == 'viettel'" class="form-group row">
+                            <label for="phoneNumber" class="col-sm-2 col-form-label col-form-label-sm">Phone Number<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="phoneNumber" placeholder="Phone Number" [(ngModel)]="item.phoneNumber"
+                                    name="phoneNumber" />
+                            </div>
+                        </div>
+                        <div [hidden]="afterType == 'vnpt'" class="form-group row">
+                            <label for="vnptCode" class="col-sm-2 col-form-label col-form-label-sm">CP Code<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                            <div class="col-sm-10">
+                                <input required type="text" class="form-control" id="vnptCode" placeholder="CP Code"
+                                    name="vnptCode" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="type==''">                                        
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label col-form-label-sm">Brand Name<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="slBrandNameType2" (change)="onChangeBrand($event)">
+                                <option class="form-control" value="viettel" [selected]="type == 'viettel'">Viettel</option>
+                                <option class="form-control" value="vnpt" [selected]="type=='vnpt'">VNPT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="contractType" class="col-sm-2 col-form-label col-form-label-sm">Contract Type<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                        <div class="col-sm-10">
+                            <input required=""type="number" class="form-control" id="contractType" placeholder="Contract Type"
+                                [(ngModel)]="addItem.contractType" name="contractType" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="apiUser" class="col-sm-2 col-form-label col-form-label-sm">Api User<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                        <div class="col-sm-10">
+                            <input required=""type="text" class="form-control" id="apiUser" placeholder="Api User" [(ngModel)]="addItem.apiUser"
+                                name="apiUser" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="apiPass" class="col-sm-2 col-form-label col-form-label-sm">Api Pass<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                        <div class="col-sm-10">
+                            <input required="" type="text" class="form-control" id="apiPass" placeholder="Api Pass" [(ngModel)]="addItem.apiPass"
+                                name="apiPass" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="branchName" class="col-sm-2 col-form-label col-form-label-sm">Branch Name<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                        <div class="col-sm-10">
+                            <input required="" type="text" class="form-control" id="branchName" placeholder="Branch Name"
+                                [(ngModel)]="addItem.branchName" name="branchName" />
+                        </div>
+                    </div>
+                    <div [hidden]="isAddViettel" class="form-group row">
+                        <label for="addPhone" class="col-sm-2 col-form-label col-form-label-sm">Phone Number<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                        <div class="col-sm-10">
+                            <input required="" type="text" class="form-control" id="addPhone" placeholder="Phone Number"
+                                [(ngModel)]="addItem.phoneNumber" name="addPhone" />
+                        </div>
+                    </div>
+                    <div [hidden]="!isAddViettel" class="form-group row">
+                        <label for="addCode" class="col-sm-2 col-form-label col-form-label-sm">CP Code<span style="color: red;">&nbsp;(<sup>&nbsp;*&nbsp;</sup>)</span></label>
+                        <div class="col-sm-10">
+                            <input required type="text" class="form-control" id="addCode" placeholder="CP Code" name="addCode" />
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </form>
+    </app-portlet-body>
+    
+</app-portlet> -->

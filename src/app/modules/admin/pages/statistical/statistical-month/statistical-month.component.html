@@ -1,0 +1,72 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header
+    [title]="'Thông kê lịch họp theo tháng'"
+    [class]="'card-head-lg'"
+  >
+    <ng-container ktPortletTools> </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <div class="d-flex justify-content-between">
+      <div class="form-group form-inline">
+        <ng-select
+          [(ngModel)]="monthSelected"
+          [clearable]="false"
+          class="ml-2"
+          style="width: 200px"
+        >
+          <ng-option *ngFor="let item of months" [value]="item.value">{{
+            item.name
+          }}</ng-option>
+        </ng-select>
+        <ng-select
+          [(ngModel)]="yearSelected"
+          [clearable]="false"
+          class="ml-2"
+          style="width: 200px"
+        >
+          <ng-option *ngFor="let item of years" [value]="item.value">{{
+            item.name
+          }}</ng-option>
+        </ng-select>
+        <button class="btn btn-success ml-2" (click)="search()">
+          <i class="fas fa-search"></i>
+          {{ "COMMON.BUTTON_SEARCH" | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="statisticalData">
+      <div class="d-flex justify-content-center font-weight-bold">
+        <div class="p-2 text-success">
+          Tổng số lịch: {{ statisticalData.totalSchedule }}
+        </div>
+        <div class="p-2 text-danger">
+          Số lịch họp có thư mời: {{ statisticalData.totalScheduleHasLetter }}
+        </div>
+        <div class="p-2 text-primary">
+          Số lịch họp không có thư mời:
+          {{ statisticalData.totalScheduleNoLetter }}
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <ngx-charts-bar-horizontal-2d
+          [view]="chartView"
+          [results]="statisticalData.chartData"
+          [xAxisLabel]="'Số lịch họp'"
+          [yAxisLabel]="'Ngày'"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          [xAxis]="true"
+          [yAxis]="true"
+        >
+        </ngx-charts-bar-horizontal-2d>
+      </div>
+    </div>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

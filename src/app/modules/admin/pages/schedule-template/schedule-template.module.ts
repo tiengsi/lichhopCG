@@ -1,0 +1,57 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ScheduleTemplateComponent } from './schedule-template.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import {
+  NgbModule,
+  NgbDropdownModule,
+  NgbNavModule,
+  NgbTooltipModule,
+} from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { TranslateModule } from '@ngx-translate/core';
+import { FileUploadModule } from 'ng2-file-upload';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { RoleEffects } from 'src/app/core/ngrx-store/role/role.effects';
+import { RolesReducer } from 'src/app/core/ngrx-store/role/role.reducers';
+import { UserEffects } from 'src/app/core/ngrx-store/user/user.effects';
+import { usersReducer } from 'src/app/core/ngrx-store/user/user.reducers';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { ScheduleTemplateRoutingModule } from './schedule-template-routing.module';
+import { ScheduleListTemplateComponent } from './schedule-list-template/schedule-list-template.component';
+import { ScheduleAddTemplateComponent } from './schedule-add-template/schedule-add-template.component';
+
+@NgModule({
+  declarations: [
+    ScheduleTemplateComponent,
+    ScheduleListTemplateComponent,
+    ScheduleAddTemplateComponent,
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+    LoadingBarModule,
+    LoadingBarHttpClientModule,
+    ScheduleTemplateRoutingModule,
+    TranslateModule.forChild(),
+    AngularEditorModule,
+    FileUploadModule,
+    NgbModule,
+    NgbDropdownModule,
+    NgbNavModule,
+    NgbTooltipModule,
+    NgSelectModule,
+    StoreModule.forFeature('users', usersReducer),
+    StoreModule.forFeature('roles', RolesReducer),
+    EffectsModule.forFeature([UserEffects, RoleEffects]),
+    NgxPermissionsModule.forChild(),
+  ],
+})
+export class ScheduleTemplateModule {}

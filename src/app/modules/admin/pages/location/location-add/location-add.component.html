@@ -1,0 +1,46 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="(isModify ? 'COMMON.BUTTON_EDIT' : 'COMMON.BUTTON_ADD') | translate" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button class="btn btn-secondary mr-2" [routerLink]="['/admin/location']">
+        <i class="fas fa-chevron-left"></i>
+        {{ "COMMON.BUTTON_CANCEL" | translate }}
+      </button>
+      <button class="btn btn-primary" (click)="onCreate()" [disabled]="!form.valid" *ngIf="!isModify && showCreateBtn">
+        <i class="far fa-save"></i>
+        {{ "COMMON.BUTTON_SAVE" | translate }}
+      </button>
+      <button class="btn btn-primary" (click)="onSave()" [disabled]="!form.valid" *ngIf="isModify && showEditBtn">
+        <i class="far fa-save"></i>
+        {{ "COMMON.BUTTON_EDIT_SAVE" | translate }}
+      </button>
+    </ng-container>
+  </app-portlet-header>`
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <form [formGroup]="form">
+      <div class="form-group row">
+        <label for="txtTitle" class="col-sm-2 col-form-label col-form-label-sm">Tiêu đề</label>
+        <div class="col-sm-10">
+          <textarea type="text" class="form-control" id="txtTitle" placeholder="Tiêu đề" formControlName="title"></textarea>
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('title', 'required')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="chkIsActive" class="col-sm-2 col-form-label col-form-label-sm">Hiển thị</label>
+        <div class="col-sm-10 text-left">
+          <input type="checkbox" class="form-control-sm" id="chkIsActive" formControlName="isActive" />
+        </div>
+      </div>
+    </form>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

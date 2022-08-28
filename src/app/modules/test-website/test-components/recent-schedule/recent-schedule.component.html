@@ -1,0 +1,82 @@
+<!-- <p>recent-schedule works!</p> -->
+<div class="container">
+  <div class="row">
+    <h2 class="top-title pl-3 pr-3 pl-sm-0 pr-sm-0 mt-4 mb-4 font-weight-bold">
+      {{infoModel?.title  }}
+    </h2>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="card w-100">
+      <div class="card-body">
+        <div class="statistics-card statistics-card-2">
+          <div class="statistics-card__item">
+            <div class="title">
+              <img src="assets/img/icon-calender.png" alt="thoi gian">
+              Thời gian
+            </div>
+            <div class="content font-weight-bold">
+               {{'Từ ' + infoModel?.timeStart + ' đến ' + infoModel?.timeEnd }}
+            </div>
+          </div>
+          <div class="statistics-card__item">
+            <div class="title">
+              <img src="assets/img/icon-map-pin.png" alt="Địa điểm">
+              Địa điểm
+            </div>
+            <div class="content font-weight-bold">{{infoModel?.venue}}</div>
+          </div>
+          <div class="statistics-card__item">
+            <div class="title">
+              <img src="assets/img/icon-group.png" alt="chủ trì">
+              Chủ trì
+            </div>
+            <div class="content font-weight-bold">{{infoModel?.hostName}}</div>
+          </div>
+          <!-- <div class="statistics-card__item">
+            <div class="title">
+              <img src="assets/img/icon-team.png" alt="Đơn vị báo cáo">
+              Đơn vị báo cáo
+            </div>
+            <div class="content font-weight-bold">{{infoModel?.reportUnit}}</div>
+          </div>
+          <div class="statistics-card__item">
+            <div class="title">
+              <img src="assets/img/icon-calender.png" alt="Đơn vị liên quan">
+              Đơn vị liên quan
+            </div>
+            <div class="content font-weight-bold">{{infoModel?.associatedUnits[0]}}</div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="card w-100">
+      <div class="card-body">
+        <mat-tab-group *ngIf="hasData; else infoText" mat-align-tabs="start">
+          <mat-tab label={{tabLabels[0]}}>
+            <app-meeting-info [infoModel]="infoModel" *ngIf="infoLoaded"></app-meeting-info>
+          </mat-tab>
+          <mat-tab label={{tabLabels[1]}}>
+            <app-meeting-documents [docsData]="scheduleFilesAttachment" [info]="meetingInfo" *ngIf="docsLoaded && docsLoaded2"></app-meeting-documents>
+          </mat-tab>
+          <mat-tab label={{tabLabels[2]}}>
+            <app-meeting-notes [meetingInfo]="meetingInfo" *ngIf="noteLoaded"></app-meeting-notes>
+          </mat-tab>
+          <mat-tab label={{tabLabels[3]}}>
+            <app-meeting-result [meetingInfo]="meetingInfo" *ngIf="resultLoaded"></app-meeting-result>
+          </mat-tab>
+        </mat-tab-group>
+        <ng-template #infoText>
+          <p>Không có phiên họp nào sắp tới</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

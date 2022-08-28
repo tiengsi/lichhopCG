@@ -1,0 +1,1065 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="'Quản Lý Lịch Họp'" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <div class="form-row align-items-center">
+        <div class="col-auto">
+          <ng-select
+            [(ngModel)]="weekSelected"
+            [clearable]="false"
+            class="ml-2"
+            style="width: 120px"
+            id="slWeek"
+            name="week"
+            (change)="onSelectWeek($event)"
+          >
+            <ng-option *ngFor="let item of weeks" [value]="item.id">{{
+              item.name
+            }}</ng-option>
+          </ng-select>
+        </div>
+        <div class="col-auto">
+          <ng-select
+            [(ngModel)]="dayOfWeekSelected"
+            [clearable]="false"
+            class="ml-2"
+            style="width: 200px"
+            id="slDayOfWeek"
+            name="dayOfWeek"
+            (change)="onSelectDayOfWeek($event)"
+          >
+            <ng-option [value]="'Tất cả ngày trong tuần'">
+              Tất cả ngày trong tuần
+            </ng-option>
+            <ng-option *ngFor="let item of allDayOfWeek" [value]="item.fullDay"
+              >{{ item.day }} ({{
+                item.fullDay | date: "dd/MM/yyyy"
+              }})</ng-option
+            >
+          </ng-select>
+        </div>
+        <!-- <div class="col-auto">
+          <label class="ml-5 mt-3"
+            >{{ startDateOfWeek | date: "dd/MM/yyyy" }} -
+            {{ endDateOfWeek | date: "dd/MM/yyyy" }}</label
+          >
+        </div> -->
+        <div class="col-auto">
+          <button *ngIf="showPublishBtn" class="btn btn-info" (click)="releaseSchedule()">
+            <i class="fas fa-eye"></i>
+            Phát hành lịch cả tuần
+          </button>
+        </div>
+        <div class="col-auto">
+          <button *ngIf="showCreateBtn" (click)="redirectAddPage()" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            {{ "COMMON.BUTTON_ADD" | translate }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <div class="d-flex justify-content-between">
+      <div class="form-group form-inline">
+        <!-- <div class="input-group">
+          <input
+            class="form-control"
+            id="txtScheduleDate"
+            placeholder="Ngày"
+            name="dp"
+            [(ngModel)]="scheduleDate"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            (click)="d.toggle()"
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-outline-secondary calendar"
+              (click)="d.toggle()"
+              type="button"
+            >
+              <i class="fas fa-calendar-week"></i>
+            </button>
+          </div>
+        </div> -->
+        <ng-select
+          [(ngModel)]="hostSelected"
+          [clearable]="false"
+          style="width: 240px"
+        >
+          <ng-option *ngFor="let item of hosts" [value]="item.id">{{
+            item.fullName
+          }}</ng-option>
+        </ng-select>
+
+        <ng-select
+          [(ngModel)]="activeSelected"
+          [clearable]="false"
+          class="ml-2"
+          style="width: 200px"
+        >
+          <ng-option *ngFor="let item of lstActive" [value]="item.value">{{
+            item.label
+          }}</ng-option>
+        </ng-select>
+
+        <ng-select
+          [(ngModel)]="statusSelected"
+          [clearable]="false"
+          class="ml-2"
+          style="width: 240px"
+        >
+          <ng-option *ngFor="let item of lstStatus" [value]="item.value">{{
+            item.label
+          }}</ng-option>
+        </ng-select>
+
+        <ng-select
+          [(ngModel)]="locationSelected"
+          [clearable]="false"
+          class="ml-2"
+          style="width: 240px"
+        >
+          <ng-option *ngFor="let item of locations" [value]="item.id">{{
+            item.title
+          }}</ng-option>
+        </ng-select>
+
+        <button class="btn btn-success ml-2" (click)="loadSchedule()">
+          <i class="fas fa-search"></i>
+          {{ "COMMON.BUTTON_SEARCH" | translate }}
+        </button>
+      </div>
+      <select
+        class="custom-select"
+        style="width: auto"
+        [(ngModel)]="pageSize"
+        (ngModelChange)="loadSchedule()"
+      >
+        <option [ngValue]="10">
+          10 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="30">
+          30 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="50">
+          50 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="100">
+          100 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+      </select>
+    </div>
+
+    <div class="text-center pb-3" *ngIf="!selectAllWeek">
+      Bạn chọn <b>{{ daySelectedToShow }}</b>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th
+              class="text-center bg-secondary"
+              style="width: 10%"
+              *ngIf="dayOfWeekSelected === txtAllDayOfWeek"
+            >
+              THỨ/NGÀY
+            </th>
+            <th class="text-center bg-secondary" style="width: 30%">
+              BUỔI SÁNG
+            </th>
+            <th class="text-center bg-secondary" style="width: 30%">
+              BUỔI CHIỀU
+            </th>
+            <th class="text-center bg-secondary" style="width: 30%">
+              BUỔI TỐI
+            </th>
+          </tr>
+        </thead>
+        <tbody *ngIf="schedules.length > 0">
+          <tr *ngFor="let schedule of schedules; let i = index">
+            <td
+              class="text-center bg-secondary"
+              *ngIf="dayOfWeekSelected === txtAllDayOfWeek"
+            >
+              <strong>{{ schedule.dayOfWeek }}</strong>
+            </td>
+            <!--Morning-->
+            <td class="p-1">
+              <div
+                *ngIf="schedule.morning.length === 0"
+                class="p-2 mb-3 float-right"
+              >
+                <div class="d-flex justify-content-between">
+                  <div class="text-center">
+                    <div
+                    *ngIf="showCreateBtn"
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic example"
+                    >
+                      <div ngbDropdown display="dynamic" container="body">
+                        <button
+                          class="btn btn-light"
+                          id="dropdownMorning"
+                          ngbDropdownToggle
+                        >
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <div
+                          ngbDropdownMenu
+                          aria-labelledby="dropdownMorning"
+                          class="border border-secondary"
+                        >
+                          <button
+                            ngbDropdownItem
+                            class="text-primary"
+                            (click)="
+                              redirectAddPageWithType(
+                                schedule.dayOfWeek,
+                                scheduleAddTypes.Morning
+                              )
+                            "
+                          >
+                            Thêm mới
+                          </button>
+                          <button ngbDropdownItem>
+                            <a
+                              class="text-secondary"
+                              href="javaScript:void(0)"
+                              (click)="redirectAddTemplate(schedule.dayOfWeek)"
+                            >
+                              Thêm lịch từ mẫu
+                            </a>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                *ngFor="let item of schedule.morning; let i = index"
+                class="p-2 mb-3"
+                [ngClass]="{
+                  'bg-warning': item.scheduleStatus === scheduleStatus.Pause,
+                  'bg-info': item.scheduleStatus === scheduleStatus.Changed
+                }"
+                style="border-bottom: 1px solid #ccc"
+              >
+                <div class="d-flex justify-content-between">
+                  <p class="text-danger">
+                    <strong>{{ item.scheduleTime + ' đến ' + item.scheduleEndTime}}</strong>
+                  </p>
+
+                  <div class="text-center">
+                    <div                    
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic example"
+                    >
+                      <div ngbDropdown display="dynamic" container="body">
+                        <button
+                        *ngIf="showCreateBtn"
+                          class="btn btn-outline-secondary"
+                          id="dropdownScMorning"
+                          ngbDropdownToggle
+                        >
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <div
+                          ngbDropdownMenu
+                          aria-labelledby="dropdownScMorning"
+                          class="border border-secondary"
+                        >
+                          <button
+                            ngbDropdownItem
+                            class="text-primary"
+                            (click)="
+                              redirectAddPageWithType(
+                                schedule.dayOfWeek,
+                                scheduleAddTypes.Morning
+                              )
+                            "
+                          >
+                            Thêm mới
+                          </button>
+                          <button ngbDropdownItem>
+                            <a
+                              class="text-secondary"
+                              href="javaScript:void(0)"
+                              (click)="redirectAddTemplate(schedule.dayOfWeek)"
+                            >
+                              Thêm lịch từ mẫu
+                            </a>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button
+                        class="btn btn-sm btn-dark"
+                        *ngIf="showSendEmailBtn"
+                        (click)="editSchedule(item.scheduleId, true)"
+                        ngbTooltip="Gửi thư mời"
+                        [disabled]="!item.isActive"
+                      >
+                        <i class="far fa-paper-plane"></i>
+                      </button>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button
+                        *ngIf="showCopyBtn"
+                        class="btn btn-sm btn-secondary"
+                        (click)="copySchedule(item.scheduleId)"
+                        ngbTooltip="Sao chép lịch họp này"
+                      >
+                        <i class="fas fa-copy"></i>
+                      </button>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button
+                      *ngIf="showEditBtn"
+                        class="btn btn-sm btn-primary"
+                        (click)="editSchedule(item.scheduleId)"
+                        ngbTooltip="Sửa lịch"
+                      >
+                        <i class="fa fa-edit"></i>
+                      </button>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button
+                      *ngIf="showApproveBtn"
+                        class="btn btn-sm btn-success"
+                        (click)="approve(item)"
+                        ngbTooltip="Duyệt lịch"
+                      >
+                        <i class="far fa-check-square"></i>
+                      </button>
+
+                      <button *ngIf="showPublishBtn && item.scheduleStatus != 4" class="btn btn-sm btn-primary" (click)="releaseSingleSchedule(item)" ngbTooltip="Phát hành">
+                        <i class="fas fa-upload"></i>
+                      </button>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button
+                        class="btn btn-sm btn-warning"
+                        *ngIf="showDelayBtn"
+                        (click)="openSchedulePauseModal(item.scheduleId)"
+                        ngbTooltip="Hoãn lịch"
+                        [disabled]="!item.isActive"
+                      >
+                        <i class="fas fa-pause"></i>
+                      </button>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button
+                      *ngIf="showChangeDateBtn"
+                        class="btn btn-sm btn-info"
+                        (click)="openScheduleChangeModal(item.scheduleId)"
+                        ngbTooltip="Dời lịch"
+                      >
+                        <i class="fas fa-exchange-alt"></i>
+                      </button>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button class="btn btn-sm btn-secondary" 
+                      *ngIf="showQRBtn"
+                        (click)="openQRCodeInfoModal(item.scheduleId)"
+                        ngbTooltip="Tài liệu chia sẻ"
+                      >
+                      <i class="fas fa-qrcode"></i>
+                      </button>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button
+                      *ngIf="showDeleteBtn"
+                        class="btn btn-sm btn-danger"
+                        (click)="deleteSchedule(item)"
+                        ngbTooltip="Xóa lịch"
+                      >
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <p>
+                  <strong>{{ item.scheduleTitle }}</strong>
+                </p>
+                <p *ngIf="item.scheduleContent">
+                  <strong>Nội dung: </strong>
+                  <span
+                    class="wrapper-content"
+                    id="wrapper-content-{{ item.scheduleId }}"
+                    [innerHTML]="item.scheduleContent"
+                  >
+                  </span>
+                  <a
+                    *ngIf="item.scheduleContent"
+                    class="btn-expan-all"
+                    id="btn-expan-all-{{ item.scheduleId }}"
+                    href="javascript:;"
+                    (click)="expandAll(item.scheduleId)"
+                    >Xem tất cả</a
+                  >
+                </p>
+                <p>
+                  <strong>Chủ trì: </strong>
+                  <span class="text-primary">{{ item.officerName }}</span>
+                </p>
+                <p>
+                  <strong>Chuẩn bị: </strong>
+                  <span>{{ item.departmentPrepare }}</span>
+                </p>
+                <p><strong>Địa điểm: </strong> {{ item.otherLocation }}</p>
+                <p><strong>Tham dự:</strong> {{ item.participantDisplay }}</p>
+                <p>
+                  <strong>Trạng thái: </strong>
+                  <span style="font-weight: bold;"
+                    [ngClass]="{
+                      'text-primary':
+                        item.scheduleStatus === scheduleStatus.Approve,
+                      'text-success':
+                        item.scheduleStatus === scheduleStatus.Release,
+                      'text-danger':
+                        item.scheduleStatus === scheduleStatus.Pause,
+                      'text-info':
+                        item.scheduleStatus === scheduleStatus.Changed
+                    }"
+                    >{{ item.scheduleStatus | scheduleStatus }}</span
+                  >
+                </p>
+                <div class="d-flex justify-content-between">
+                  <p
+                    class="badge"
+                    [ngClass]="{
+                      'badge-success': item.isSendSMSInvite,
+                      'badge-secondary': !item.isSendSMSInvite
+                    }"
+                  >
+                    <strong *ngIf="item.isSendSMSInvite">Đã gửi thư mời</strong>
+                    <strong *ngIf="!item.isSendSMSInvite"
+                      >Chưa gửi thư mời</strong
+                    >
+                  </p>
+                  <p class="badge badge-warning" *ngIf="item.isChangeLocation">
+                    Đã thay đổi địa điểm
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!--Afternoon-->
+            <td class="p-1">
+              <div
+                *ngIf="schedule.afternoon.length === 0"
+                class="p-2 mb-3 float-right"
+              >
+                <div class="d-flex justify-content-between">
+                  <div class="text-center">
+                    <div *ngIf="showCreateBtn" class="float-right" ngbDropdown container="body">
+                      <button
+                        class="btn btn-light mr-2"
+                        id="dropdownNonAfternoon"
+                        ngbDropdownToggle
+                      >
+                        <i class="fa fa-plus"></i>
+                      </button>
+                      <div
+                        ngbDropdownMenu
+                        aria-labelledby="dropdownNonAfternoon"
+                        class="border border-secondary"
+                      >
+                        <button
+                          ngbDropdownItem
+                          class="text-primary"
+                          (click)="
+                            redirectAddPageWithType(
+                              schedule.dayOfWeek,
+                              scheduleAddTypes.Afternoon
+                            )
+                          "
+                        >
+                          Thêm mới
+                        </button>
+                        <button ngbDropdownItem>
+                          <a
+                            class="text-secondary"
+                            href="javaScript:void(0)"
+                            (click)="redirectAddTemplate(schedule.dayOfWeek)"
+                          >
+                            Thêm lịch từ mẫu
+                          </a>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                *ngFor="let item of schedule.afternoon; let i = index"
+                style="border-bottom: 1px solid #ccc"
+                class="p-2 mb-3"
+                [ngClass]="{
+                  'bg-warning': item.scheduleStatus === scheduleStatus.Pause,
+                  'bg-info': item.scheduleStatus === scheduleStatus.Changed
+                }"
+              >
+                <div class="d-flex justify-content-between">
+                  <p class="text-danger">
+                    <strong>{{ item.scheduleTime + ' đến ' + item.scheduleEndTime}}</strong>
+                  </p>
+
+                  <div class="text-center">
+                    <div                    
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic example"
+                    >
+                      <div *ngIf="showCreateBtn" ngbDropdown container="body">
+                        <button
+                          class="btn btn-outline-secondary"
+                          id="dropdownScAfternoon"
+                          ngbDropdownToggle
+                        >
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <div
+                          ngbDropdownMenu
+                          aria-labelledby="dropdownScAfternoon"
+                          class="border border-secondary"
+                        >
+                          <button
+                            ngbDropdownItem
+                            class="text-primary"
+                            (click)="
+                              redirectAddPageWithType(
+                                schedule.dayOfWeek,
+                                scheduleAddTypes.Afternoon
+                              )
+                            "
+                          >
+                            Thêm mới
+                          </button>
+                          <button ngbDropdownItem>
+                            <a
+                              class="text-secondary"
+                              href="javaScript:void(0)"
+                              (click)="redirectAddTemplate(schedule.dayOfWeek)"
+                            >
+                              Thêm lịch từ mẫu
+                            </a>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- <button
+                        class="btn btn-sm btn-dark"
+                        (click)="editSchedule(item.scheduleId)"
+                        title="Gửi thư mời"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                        [disabled]="!item.isActive"
+                      >
+                        <i class="far fa-paper-plane"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-secondary"
+                        (click)="copySchedule(item.scheduleId)"
+                        title="Sao chép lịch họp này"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="fas fa-copy"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-primary"
+                        (click)="editSchedule(item.scheduleId)"
+                        title="Sửa lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="fa fa-edit"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-success"
+                        (click)="approve(item)"
+                        title="Duyệt lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="far fa-check-square"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-warning"
+                        (click)="openSchedulePauseModal(item.scheduleId)"
+                        title="Hoãn lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                        [disabled]="!item.isActive"
+                      >
+                        <i class="fas fa-pause"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-info"
+                        (click)="openScheduleChangeModal(item.scheduleId)"
+                        title="Dời lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="fas fa-exchange-alt"></i>
+                      </button>
+                      
+                      <button class="btn btn-sm btn-secondary" (click)="openQRCodeInfoModal(item.scheduleId)" title="QR Code"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]">
+                        <i class="fas fa-qrcode"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-danger"
+                        (click)="deleteSchedule(item)"
+                        title="Xóa lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="fas fa-trash-alt"></i>
+                      </button> -->
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button class="btn btn-sm btn-dark" *ngIf="showSendEmailBtn" (click)="editSchedule(item.scheduleId, true)" ngbTooltip="Gửi thư mời"
+                        [disabled]="!item.isActive">
+                        <i class="far fa-paper-plane"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showCopyBtn" class="btn btn-sm btn-secondary" (click)="copySchedule(item.scheduleId)"
+                        ngbTooltip="Sao chép lịch họp này">
+                        <i class="fas fa-copy"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showEditBtn" class="btn btn-sm btn-primary" (click)="editSchedule(item.scheduleId)" ngbTooltip="Sửa lịch">
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showApproveBtn" class="btn btn-sm btn-success" (click)="approve(item)" ngbTooltip="Duyệt lịch">
+                        <i class="far fa-check-square"></i>
+                      </button>
+
+                      <button *ngIf="showPublishBtn && item.scheduleStatus != 4" class="btn btn-sm btn-primary"
+                        (click)="releaseSingleSchedule(item)" ngbTooltip="Phát hành">
+                        <i class="fas fa-upload"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button class="btn btn-sm btn-warning" *ngIf="showDelayBtn" (click)="openSchedulePauseModal(item.scheduleId)"
+                        ngbTooltip="Hoãn lịch" [disabled]="!item.isActive">
+                        <i class="fas fa-pause"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showChangeDateBtn" class="btn btn-sm btn-info" (click)="openScheduleChangeModal(item.scheduleId)"
+                        ngbTooltip="Dời lịch">
+                        <i class="fas fa-exchange-alt"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button class="btn btn-sm btn-secondary" *ngIf="showQRBtn" (click)="openQRCodeInfoModal(item.scheduleId)"
+                        ngbTooltip="Tài liệu chia sẻ">
+                        <i class="fas fa-qrcode"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showDeleteBtn" class="btn btn-sm btn-danger" (click)="deleteSchedule(item)" ngbTooltip="Xóa lịch">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <p>
+                  <strong>{{ item.scheduleTitle }}</strong>
+                </p>
+                <p *ngIf="item.scheduleContent">
+                  <strong>Nội dung: </strong>
+                  <span
+                    class="wrapper-content"
+                    id="wrapper-content-{{ item.scheduleId }}"
+                    [innerHTML]="item.scheduleContent"
+                  >
+                  </span>
+                  <a
+                    *ngIf="item.scheduleContent"
+                    class="btn-expan-all"
+                    id="btn-expan-all-{{ item.scheduleId }}"
+                    href="javascript:;"
+                    (click)="expandAll(item.scheduleId)"
+                    >Xem tất cả</a
+                  >
+                </p>
+                <p>
+                  <strong>Chủ trì: </strong>
+                  <span class="text-primary">{{ item.officerName }}</span>
+                </p>
+                <p>
+                  <strong>Chuẩn bị: </strong>
+                  <span>{{ item.departmentPrepare }}</span>
+                </p>
+                <p><strong>Địa điểm: </strong> {{ item.otherLocation }}</p>
+                <p><strong>Tham dự:</strong> {{ item.participantDisplay }}</p>
+                <p>
+                  <strong>Trạng thái: </strong>
+                  <span style="font-weight: bold;"
+                    [ngClass]="{
+                      'text-primary':
+                        item.scheduleStatus === scheduleStatus.Approve,
+                      'text-success':
+                        item.scheduleStatus === scheduleStatus.Release,
+                      'text-danger':
+                        item.scheduleStatus === scheduleStatus.Pause,
+                      'text-info':
+                        item.scheduleStatus === scheduleStatus.Changed
+                    }"
+                    >{{ item.scheduleStatus | scheduleStatus }}</span
+                  >
+                </p>
+                <div class="d-flex justify-content-between">
+                  <p
+                    class="badge"
+                    [ngClass]="{
+                      'badge-success': item.isSendSMSInvite,
+                      'badge-secondary': !item.isSendSMSInvite
+                    }"
+                  >
+                    <strong *ngIf="item.isSendSMSInvite">Đã gửi thư mời</strong>
+                    <strong *ngIf="!item.isSendSMSInvite"
+                      >Chưa gửi thư mời</strong
+                    >
+                  </p>
+                  <p class="badge badge-warning" *ngIf="item.isChangeLocation">
+                    Đã thay đổi địa điểm
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!--Evening-->
+            <td class="p-1">
+              <div
+                *ngIf="schedule.evening.length === 0"
+                class="p-2 mb-3 float-right"
+              >
+                <div class="d-flex justify-content-between">
+                  <div class="text-center">
+                    <div
+                    *ngIf="showCreateBtn"
+                      ngbDropdown
+                      class="float-right"
+                      display="dynamic"
+                      container="body"
+                    >
+                      <button
+                        class="btn btn-outline-secondary"
+                        id="dropdownNonEvening"
+                        ngbDropdownToggle
+                      >
+                        <i class="fa fa-plus"></i>
+                      </button>
+                      <div
+                        ngbDropdownMenu
+                        aria-labelledby="dropdownNonEvening"
+                        class="border border-secondary"
+                      >
+                        <button
+                          ngbDropdownItem
+                          class="text-primary"
+                          (click)="
+                            redirectAddPageWithType(
+                              schedule.dayOfWeek,
+                              scheduleAddTypes.Evening
+                            )
+                          "
+                        >
+                          Thêm mới
+                        </button>
+                        <button ngbDropdownItem>
+                          <a
+                            class="text-secondary"
+                            href="javaScript:void(0)"
+                            (click)="redirectAddTemplate(schedule.dayOfWeek)"
+                          >
+                            Thêm lịch từ mẫu
+                          </a>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                *ngFor="let item of schedule.evening; let i = index"
+                class="p-2 mb-3"
+                [ngClass]="{
+                  'bg-warning': item.scheduleStatus === scheduleStatus.Pause,
+                  'bg-info': item.scheduleStatus === scheduleStatus.Changed
+                }"
+                style="border-bottom: 1px solid #ccc"
+              >
+                <div class="d-flex justify-content-between">
+                  <p class="text-danger">
+                    <strong>{{ item.scheduleTime + ' đến ' + item.scheduleEndTime }}</strong>
+                  </p>
+
+                  <div class="text-center">
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic example"
+                    >
+                      <div ngbDropdown container="body">
+                        <button
+                        *ngIf="showCreateBtn"
+                          class="btn btn-outline-secondary"
+                          id="dropdownScEvening"
+                          ngbDropdownToggle
+                        >
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <div
+                          ngbDropdownMenu
+                          aria-labelledby="dropdownScEvening"
+                          class="border border-secondary"
+                        >
+                          <button
+                            ngbDropdownItem
+                            class="text-primary"
+                            (click)="
+                              redirectAddPageWithType(
+                                schedule.dayOfWeek,
+                                scheduleAddTypes.Evening
+                              )
+                            "
+                          >
+                            Thêm mới
+                          </button>
+                          <button ngbDropdownItem>
+                            <a
+                              class="text-secondary"
+                              href="javaScript:void(0)"
+                              (click)="redirectAddTemplate(schedule.dayOfWeek)"
+                            >
+                              Thêm lịch từ mẫu
+                            </a>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- <button
+                        class="btn btn-sm btn-dark"
+                        (click)="editSchedule(item.scheduleId)"
+                        title="Gửi thư mời"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                        [disabled]="!item.isActive"
+                      >
+                        <i class="far fa-paper-plane"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-secondary"
+                        (click)="copySchedule(item.scheduleId)"
+                        title="Sao chép lịch họp này"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="fas fa-copy"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-primary"
+                        (click)="editSchedule(item.scheduleId)"
+                        title="Sửa lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="fa fa-edit"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-success"
+                        (click)="approve(item)"
+                        title="Duyệt lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="far fa-check-square"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-warning"
+                        (click)="openSchedulePauseModal(item.scheduleId)"
+                        title="Hoãn lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                        [disabled]="!item.isActive"
+                      >
+                        <i class="fas fa-pause"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-info"
+                        (click)="openScheduleChangeModal(item.scheduleId)"
+                        title="Dời lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="fas fa-exchange-alt"></i>
+                      </button>
+
+                      <button class="btn btn-sm btn-secondary" (click)="openQRCodeInfoModal(item.scheduleId)" title="QR Code"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]">
+                        <i class="fas fa-qrcode"></i>
+                      </button>
+                      
+                      <button
+                        class="btn btn-sm btn-danger"
+                        (click)="deleteSchedule(item)"
+                        title="Xóa lịch"
+                        *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]"
+                      >
+                        <i class="fas fa-trash-alt"></i>
+                      </button> -->
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button class="btn btn-sm btn-dark" *ngIf="showSendEmailBtn" (click)="editSchedule(item.scheduleId, true)" ngbTooltip="Gửi thư mời"
+                        [disabled]="!item.isActive">
+                        <i class="far fa-paper-plane"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showCopyBtn" class="btn btn-sm btn-secondary" (click)="copySchedule(item.scheduleId)"
+                        ngbTooltip="Sao chép lịch họp này">
+                        <i class="fas fa-copy"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showEditBtn" class="btn btn-sm btn-primary" (click)="editSchedule(item.scheduleId)" ngbTooltip="Sửa lịch">
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showApproveBtn" class="btn btn-sm btn-success" (click)="approve(item)" ngbTooltip="Duyệt lịch">
+                        <i class="far fa-check-square"></i>
+                      </button>
+                      
+                      <button *ngIf="showPublishBtn && item.scheduleStatus != 4" class="btn btn-sm btn-primary"
+                        (click)="releaseSingleSchedule(item)" ngbTooltip="Phát hành">
+                        <i class="fas fa-upload"></i>
+                      </button>
+
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button class="btn btn-sm btn-warning" *ngIf="showDelayBtn" (click)="openSchedulePauseModal(item.scheduleId)"
+                        ngbTooltip="Hoãn lịch" [disabled]="!item.isActive">
+                        <i class="fas fa-pause"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showChangeDateBtn" class="btn btn-sm btn-info" (click)="openScheduleChangeModal(item.scheduleId)"
+                        ngbTooltip="Dời lịch">
+                        <i class="fas fa-exchange-alt"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button class="btn btn-sm btn-secondary" *ngIf="showQRBtn" (click)="openQRCodeInfoModal(item.scheduleId)"
+                        ngbTooltip="Tài liệu chia sẻ">
+                        <i class="fas fa-qrcode"></i>
+                      </button>
+                      
+                      <!-- *ngxPermissionsOnly="[roles.Admin, roles.SuperAdmin]" -->
+                      <button *ngIf="showDeleteBtn" class="btn btn-sm btn-danger" (click)="deleteSchedule(item)" ngbTooltip="Xóa lịch">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <p>
+                  <strong>{{ item.scheduleTitle }}</strong>
+                </p>
+                <p *ngIf="item.scheduleContent">
+                  <strong>Nội dung: </strong>
+                  <span
+                    class="wrapper-content"
+                    id="wrapper-content-{{ item.scheduleId }}"
+                    [innerHTML]="item.scheduleContent"
+                  >
+                  </span>
+                  <a
+                    *ngIf="item.scheduleContent"
+                    class="btn-expan-all"
+                    id="btn-expan-all-{{ item.scheduleId }}"
+                    href="javascript:;"
+                    (click)="expandAll(item.scheduleId)"
+                    >Xem tất cả</a
+                  >
+                </p>
+                <p>
+                  <strong>Chủ trì: </strong>
+                  <span class="text-primary">{{ item.officerName }}</span>
+                </p>
+                <p>
+                  <strong>Chuẩn bị: </strong>
+                  <span>{{ item.departmentPrepare }}</span>
+                </p>
+                <p><strong>Địa điểm: </strong> {{ item.otherLocation }}</p>
+                <p><strong>Tham dự:</strong> {{ item.participantDisplay }}</p>
+                <p>
+                  <strong>Trạng thái: </strong>
+                  <span style="font-weight: bold;"
+                    [ngClass]="{
+                      'text-primary':
+                        item.scheduleStatus === scheduleStatus.Approve,
+                      'text-success':
+                        item.scheduleStatus === scheduleStatus.Release,
+                      'text-danger':
+                        item.scheduleStatus === scheduleStatus.Pause,
+                      'text-info':
+                        item.scheduleStatus === scheduleStatus.Changed
+                    }"
+                    >{{ item.scheduleStatus | scheduleStatus }}</span
+                  >
+                </p>
+                <div class="d-flex justify-content-between">
+                  <p
+                    class="badge"
+                    [ngClass]="{
+                      'badge-success': item.isSendSMSInvite,
+                      'badge-secondary': !item.isSendSMSInvite
+                    }"
+                  >
+                    <strong *ngIf="item.isSendSMSInvite">Đã gửi thư mời</strong>
+                    <strong *ngIf="!item.isSendSMSInvite"
+                      >Chưa gửi thư mời</strong
+                    >
+                  </p>
+                  <p class="badge badge-warning" *ngIf="item.isChangeLocation">
+                    Đã thay đổi địa điểm
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="schedules.length === 0">
+          <tr>
+            <td colspan="4" class="p-3 text-danger text-center">
+              Không có dữ liệu
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

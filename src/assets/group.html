@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- global -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>hopvnstech</title>
+
+  <link rel="icon" type="image/png" href="./img/logo.png"/>
+  <link rel="stylesheet" href="css/style.min.css"/>
+</head>
+<body>
+
+<div class="page-wrapper">
+  <!--  -->
+  <div class="page-nav">
+    <div class="container">
+      <div class="row">
+        <div class="nav-wrapper">
+          <a href="#" class="nav-logo">
+            <img src="./img/logo.png" alt="" width="55px">
+            Quản lý cuộc họp
+          </a>
+          <div class="nav-list flex-grow-1 d-flex justify-content-center">
+            <a href="#" class="nav-item">
+              <img src="./img/icon-calender-white.png" alt="icon lich" width="24p">
+              Lịch gần nhất
+            </a>
+            <a href="#" class="nav-item">
+              <img src="./img/icon-day-white.png" alt="icon lich" width="24p">
+              Lịch cá nhân
+            </a>
+            <a href="#" class="nav-item active">
+              <img src="./img/icon-group-user-white.png" alt="icon lich" width="24p">
+              Lịch đơn vị
+            </a>
+          </div>
+          <a href="#" class="user-block">
+            <img class="avatar" src="./img/avatar.png" alt="avatar" width="48px">
+            <span>Hi, Lich Tran</span>
+            <div class="user-block-extend">
+              <div class="user-block-extend-row">
+                <span>Đăng xuất</span>
+              </div>
+            </div>
+          </a>
+          <div class="icon-mobile-menu ml-3">
+            <img src="./img/icon-menu-white.png" alt="icon menu" width="32px">
+          </div>
+          <div class="nav-mobile-wrapper">
+            <div class="icon-mobile-close-menu">
+              <img src="./img/icon-delete.png" alt="icon menu" width="20px">
+            </div>
+
+            <div href="#" class="user-block">
+              <img class="avatar" src="./img/avatar.png" alt="avatar" width="48px">
+              <span>Hi, Lich Tran</span>
+            </div>
+            <a href="#" class="btn-account">
+              <span>Đăng xuất</span>
+            </a>
+
+
+            <div class="nav-mobile-1">
+              <div class="nav-mobile-1__item active">
+                <a href="#">Lịch gần nhất</a>
+              </div>
+            </div>
+
+            <div class="nav-mobile-1">
+              <div class="nav-mobile-1__item">
+                <a href="#">Lịch cá nhân</a>
+              </div>
+            </div>
+
+            <div class="nav-mobile-1">
+              <div class="nav-mobile-1__item">
+                <a href="#">Lịch đơn vị</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <div class="container">
+    <div class="row">
+      <div class="tabs flex-wrap no-bg mt-4">
+        <div class="tab-item active" data-id="data-lichcanhan">Lịch cá nhân</div>
+        <div class="tab-item" data-id="data-lichhop">Lịch họp</div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <div class="container">
+    <div class="row">
+      <div class="card w-100">
+        <div class="card-body">
+          <div class="pb-3 d-flex flex-wrap" id="data-ghichucanhan">
+            <div class="d-flex justify-content-end w-100 pb-3 flex-wrap">
+              <div class="filter d-flex align-items-start flex-wrap">
+                <select name="" id="nguoi-chu-tri" class="custom-select">
+                  <option value="" selected disabled>Người chủ trì</option>
+                </select>
+                <select name="" id="phong-hop" class="custom-select">
+                  <option value="" selected disabled>Phòng họp</option>
+                </select>
+                <select name="" id="chon-tuan" class="custom-select">
+                  <option value="" selected disabled>Chọn tuần</option>
+                </select>
+                <button class="btn custom-btn mb-1 btn-filter">
+                  <img src="./img/icon-filter-white.png" alt="Áp dụng lọc" width="20px">
+                  Áp lụng lọc
+                </button>
+              </div>
+              <button class="btn">
+                <img src="./img/icon-save-word.png" alt="Lưu lịch dạng word">
+              </button>
+            </div>
+
+            <div class="tabs flex-wrap mt-3">
+              <div class="tab-item bg-gains" data-id="data-lichcanhan">Thứ 2 <br class="d-none d-md-block"> 02/05/2022
+              </div>
+              <div class="tab-item bg-gains" data-id="data-lichcanhan">Thứ 3 <br class="d-none d-md-block"> 03/05/2022
+              </div>
+              <div class="tab-item bg-gains" data-id="data-lichcanhan">Thứ 4 <br class="d-none d-md-block"> 04/05/2022
+              </div>
+              <div class="tab-item bg-gains" data-id="data-lichcanhan">Thứ 5 <br class="d-none d-md-block"> 05/05/2022
+              </div>
+              <div class="tab-item bg-gains" data-id="data-lichcanhan">Thứ 6 <br class="d-none d-md-block"> 06/05/2022
+              </div>
+              <div class="tab-item bg-gains" data-id="data-lichcanhan">Thứ 7 <br class="d-none d-md-block"> 07/05/2022
+              </div>
+              <div class="tab-item bg-gains" data-id="data-lichcanhan">Chủ nhật <br class="d-none d-md-block">
+                08/05/2022
+              </div>
+              <div class="tab-item active bg-gains" data-id="data-lichcanhan">Cả tuần <br class="d-none d-md-block">
+                02/05/2022 - 08/05/2022
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table width="100%" class="table">
+                <tr style="height: 55px">
+                  <th>Ngày</th>
+                  <th>Buổi</th>
+                  <th>Giờ</th>
+                  <th>Địa điểm</th>
+                  <th>Nội dung</th>
+                  <th>Xem chi tiết</th>
+                </tr>
+                <tr style="font-size: .87rem">
+                  <td rowspan="2">Thứ 2, 16/01/2023</td>
+                  <td>Sáng</td>
+                  <td>2022-04-29T17:00:00</td>
+                  <td>Phòng họp 3</td>
+                  <td>Họp ban chỉ đạo Cải Cách Hành Chính 2022
+                    <br>
+                    <badge class="badge badge-blue">
+                      <img src="./img/icon-file.png" alt=""> Tài liệu
+                    </badge>
+                    <badge class="badge badge-blue">
+                      <img src="./img/icon-circle.png" alt=""> Đã hoãn
+                    </badge>
+                    <badge class="badge badge-blue">
+                      <img src="./img/icon-telegram.png" alt=""> Đã gửi thư mời
+                    </badge>
+                    <badge class="badge badge-blue">
+                      <img src="./img/icon-circle-red.png" alt=""> Đã đổi địa điểm
+                    </badge>
+                  </td>
+                  <td>
+                    <img class="cursor-pointer" src="./img/icon-eye.png" alt="xem chi tiết" data-toggle="tooltip"
+                         data-placement="bottom" title="Xem">
+                  </td>
+                </tr>
+                <tr style="font-size: .87rem">
+                  <td>Chiều</td>
+                  <td>2022-04-29T17:00:00</td>
+                  <td>Phòng họp 3</td>
+                  <td>
+                  </td>
+                  <td>
+                    <img class="cursor-pointer" src="./img/icon-eye.png" alt="xem chi tiết" data-toggle="tooltip"
+                         data-placement="bottom" title="Xem">
+                  </td>
+                </tr>
+                <tr style="font-size: .87rem">
+                  <td rowspan="2">Thứ 3 16/01/2023</td>
+                  <td>Sáng</td>
+                  <td>2022-04-29T17:00:00</td>
+                  <td>Phòng họp 3</td>
+                  <td>
+                  </td>
+                  <td>
+                    <img class="cursor-pointer" src="./img/icon-eye.png" alt="xem chi tiết" data-toggle="tooltip"
+                         data-placement="bottom" title="Xem">
+                  </td>
+                </tr>
+                <tr style="font-size: .87rem">
+                  <td>Chiều</td>
+                  <td>2022-04-29T17:00:00</td>
+                  <td>Phòng họp 3</td>
+                  <td>
+                  </td>
+                  <td>
+                    <img class="cursor-pointer" src="./img/icon-eye.png" alt="xem chi tiết" data-toggle="tooltip"
+                         data-placement="bottom" title="Xem">
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <div class="page-footer mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-lg-4 mb-5 text-center">
+          <div class="mb-3">
+            <img class="footer-logo" src="./img/logo.png" alt="footer logo">
+          </div>
+          <h5><strong>Hệ thống phòng họp không giấy</strong></h5>
+        </div>
+        <div class="col-12 col-lg-5 mb-5">
+          <h5><strong>Liên hệ</strong></h5>
+          <div class="d-flex mb-3">
+            <img class="mr-2 align-self-start" style="min-width: 20px" src="./img/icon-home-white.png" alt="địa chỉ">
+            <div href="#">Địa chỉ: 15 Đinh Tiên Hoàng, phường Đồng Tâm, tp Yên Bái, Yên Bái</div>
+          </div>
+          <div class="d-flex mb-3">
+            <img class="mr-2 align-self-start" style="min-width: 20px" src="./img/icon-phone-white.png" alt="địa chỉ">
+            <div href="#">Điện thoại: Trung tâm Công nghệ thông tin Yên Bái: 02163851888</div>
+          </div>
+          <div class="d-flex mb-3">
+            <img class="mr-2 align-self-start" style="min-width: 20px" src="./img/icon-mail-white.png" alt="địa chỉ">
+            <div href="#">Email: hungpv.ybi@gmail.com</div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-3 mb-5">
+          <h5><strong>Trang Web Liên kết</strong></h5>
+          <select name="web-link" id="web-link">
+            <option disabled selected>Trang web liên kết</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+  <!-- Modal -->
+  <div class="modal fade" id="modal-new-note" tabindex="-1" role="dialog" aria-labelledby="modal-new-noteLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal-new-noteLabel">Tạo ghi chú mới</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h6>Tiêu đề</h6>
+          <input class="form-control custom-input mb-3" type="text" placeholder="Nhập tên tiêu đề">
+          <h6>Nội dung</h6>
+          <textarea name="" id="modal-new-note-content"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn custom-btn btn-outline mr-1" data-dismiss="modal">Hủy</button>
+          <button type="button" class="btn custom-btn">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="modal-new-report" tabindex="-1" role="dialog" aria-labelledby="modal-new-reportLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal-new-reportLabel">Thêm mới báo cáo</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="input-file-wrapper">
+            <img src="./img/icon-upload.png" alt="icon upload" class="mb-4">
+            <div>Kéo thả hoặc nhấp vào để tải lên</div>
+            <input type="file" class="input-file">
+          </div>
+          <div class="list-file">
+            <div class="file-item">
+              <div class="name">lichCG.doc</div>
+              <div class="size">1Mb</div>
+              <div class="flex-grow-1 text-right">
+                <img class="cursor-pointer" src="./img/icon-trash.png" alt="delete" data-toggle="tooltip"
+                     data-placement="bottom" title="Xóa">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn custom-btn btn-outline mr-1" data-dismiss="modal">Hủy</button>
+          <button type="button" class="btn custom-btn">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--script-->
+<script type="text/javascript" src="./js/jquery-3.5.1.slim.min.js"></script>
+<script type="text/javascript" src="./js/tinymce.min.js"></script>
+<script type="text/javascript" src="./js/popper.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="./js/lightgallery.min.js"></script>
+<script type="text/javascript" src="./js/lg-thumbnail.umd.min.js"></script>
+<script type="text/javascript" src="./js/lg-zoom.umd.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap-select.min.js"></script>
+
+<!--my script -->
+<script type="text/javascript" src="./js/script.js"></script>
+</body>
+</html>

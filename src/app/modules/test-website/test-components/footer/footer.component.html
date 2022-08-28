@@ -1,0 +1,77 @@
+<!--<footer class="pt-4" style="background-color: rgba(41, 128, 185, 0.75); padding-bottom: 20px; padding-bottom: 20px; margin-top: 20px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5">
+        <h4 class="text-uppercase font-weight-bold">HỆ THỐNG PHÒNG HỌP KHÔNG GIẤY</h4>
+        <div class="mb-2">
+          <i class="fa fa-home" aria-hidden="true"></i><span class="ml-3">Địa chỉ: 15 Đinh Tiên Hoàng, phường Đồng Tâm, tp Yên Bái, Yên Bái</span> <br>
+        </div>
+        <div class="mb-2">
+          <i class="fa fa-phone" aria-hidden="true"></i><span class="ml-3">Điện thoại: Trung tâm Công nghệ thông tin Yên Bái: 02163851888</span> <br>
+        </div>
+        <div class="mb-2">
+          <i class="fa fa-envelope" aria-hidden="true"></i><span class="ml-3">Email: hungpv.ybi@gmail.com</span><br>
+        </div>
+      </div>
+      <div class="col-md-3 offset-1">
+        <h4 class="text-uppercase font-weight-bold">Trang web liên kết</h4>
+        <div class="mb-2">
+          <select name="ddlLinks" id="ddlLinks" class="form-control" (change)="goToLink()" style="width: 200px;">
+            <option value="-1">Trang web liên kết</option>
+            <option *ngFor="let link of links" value={{link.value}}>{{link.text}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <h4 class="text-uppercase font-weight-bold">Liên hệ chúng tôi tại</h4>
+        <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
+        <span class="ml-5">
+          <a href="mailto:cangio@tphcm.gov.com"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>-->
+
+<div class="page-footer mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-4 mb-5 text-center">
+        <div class="mb-3">
+          <img class="footer-logo" src="assets/img/logo_yenbai.jpeg" style="max-width: 160px;" alt="footer logo">
+        </div>
+        <h5>
+          <strong>
+            Hệ thống Quản lý cuộc họp
+          </strong>
+        </h5>
+      </div>
+      <div class="col-12 col-lg-5 offset-lg-3 mb-5">
+        <h5><strong>Liên hệ</strong></h5>
+        <div class="d-flex mb-3">
+          <img class="mr-2 align-self-start" style="min-width: 20px" src="assets/img/icon-home-white.png" alt="địa chỉ">
+          <div href="#">Địa chỉ: 15 Đinh Tiên Hoàng, phường Đồng Tâm, tp Yên Bái, Yên Bái</div>
+        </div>
+        <div class="d-flex mb-3">
+          <img class="mr-2 align-self-start" style="min-width: 20px" src="assets/img/icon-phone-white.png" alt="địa chỉ">
+          <div href="#">Điện thoại: Trung tâm chuyển đổi số Yên Bái: 0216 (3) 892 209</div>
+        </div>
+        <div class="d-flex mb-3">
+          <img class="mr-2 align-self-start" style="min-width: 20px" src="assets/img/icon-mail-white.png" alt="địa chỉ">
+          <div href="#">Email:</div>
+        </div>
+      </div>
+      <!-- <div class="col-12 col-lg-3 mb-5">
+        <h5><strong>Trang Web Liên kết</strong></h5>
+        <select name="web-link" id="web-link" (change)="goToLink()">
+          <option *ngFor="let link of links" value={{link.value}}>{{link.text}}</option>
+        </select>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+
+
+
+

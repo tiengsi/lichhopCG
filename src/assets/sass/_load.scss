@@ -1,0 +1,234 @@
+.load-icon {
+    width: 70px;
+    text-align: center;
+    cursor: not-allowed;
+
+    & > span {
+        width: 7px;
+        height: 7px;
+        background-color: #c6cfda;
+        border-radius: 100%;
+        display: inline-block;
+        animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    }
+
+    .bounce1 {
+        animation-delay: -0.32s;
+    }
+
+    .bounce2 {
+        animation-delay: -0.16s;
+    }
+}
+
+@-webkit-keyframes sk-bouncedelay {
+    0%, 80%, 100% {
+        -webkit-transform: scale(0)
+    }
+
+    40% {
+        -webkit-transform: scale(1.0)
+    }
+}
+
+@keyframes sk-bouncedelay {
+    0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+
+    40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+    }
+}
+
+@-webkit-keyframes loadplaceHolder {
+    0% {
+        background-position: -468px 0
+    }
+
+    100% {
+        background-position: 468px 0
+    }
+}
+
+@keyframes loadplaceHolder {
+    0% {
+        background-position: -468px 0
+    }
+
+    100% {
+        background-position: 468px 0
+    }
+}
+
+.load {
+    animation-duration: 1.7s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: loadplaceHolder;
+    animation-timing-function: linear;
+    background: rgba(212, 212, 212, 0.40);
+    background: linear-gradient(to right, rgba(212, 212, 212, 0.40) 8%, rgba(193, 193, 193, 0.68) 18%, rgba(212, 212, 212, 0.40) 33%);
+    background-size: 1000px 104px;
+    position: relative;
+    height: 12px;
+    margin: 4px 0;
+    border-radius: 4px;
+    width: 100%;
+    overflow: auto;
+
+    &.load50 {
+        width: 50%;
+    }
+
+    &.load25 {
+        width: 25%;
+    }
+
+    &.loadH350 {
+        height: 350px;
+        background: #777777;
+    }
+
+    &.loadH150 {
+        height: 150px;
+        background: #777777;
+    }
+
+    &.loadH100 {
+        height: 100%;
+        background: #D1D1D1;
+        margin: 0;
+        border-radius: 0;
+    }
+}
+
+/*loading overlay*/
+
+#loadingOverlay {
+    z-index: 9999;
+}
+
+@-moz-keyframes fadein {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes fadein {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@-o-keyframes fadein {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+.spinner-wrapper {
+    min-width: 100%;
+    min-height: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.60);
+    position: fixed;
+    z-index: 9999;
+}
+
+.spinner-text {
+    position: fixed;
+    top: 41.5%;
+    left: 47%;
+    margin: 16px 0 0 35px;
+    font-size: 9px;
+    font-family: Arial;
+    color: #3699FF;
+    letter-spacing: 1px;
+    font-weight: 700
+}
+
+.spinner {
+    margin: 0;
+    display: block;
+    position: fixed;
+    left: 45%;
+    top: 40%;
+    border: 25px solid #3699FF;
+    width: 1px;
+    height: 1px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    border-radius: 50px;
+    -webkit-animation: spin 1.5s infinite;
+    -moz-animation: spin 1.5s infinite;
+    animation: spin 1.5s infinite;
+}
+
+@-webkit-keyframes spin {
+    0%,100% {
+        -webkit-transform: rotate(0deg) scale(1)
+    }
+
+    50% {
+        -webkit-transform: rotate(720deg) scale(0.6)
+    }
+}
+
+@-moz-keyframes spin {
+    0%,100% {
+        -moz-transform: rotate(0deg) scale(1)
+    }
+
+    50% {
+        -moz-transform: rotate(720deg) scale(0.6)
+    }
+}
+
+@-o-keyframes spin {
+    0%,100% {
+        -o-transform: rotate(0deg) scale(1)
+    }
+
+    50% {
+        -o-transform: rotate(720deg) scale(0.6)
+    }
+}
+
+@keyframes spin {
+    0%,100% {
+        transform: rotate(0deg) scale(1)
+    }
+
+    50% {
+        transform: rotate(720deg) scale(0.6)
+    }
+}

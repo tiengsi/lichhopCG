@@ -1,0 +1,9 @@
+<div class="wb-menutop">
+  <ul>
+    <li *ngFor="let item of categories">
+      <a [ngClass]="{'active': item.isActive}" [routerLink]="generateCategoryLink(item)" title="{{item.categoryName}}">
+        {{item.categoryName}}
+      </a>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,15 @@
+<ngx-loading-bar ref="http"></ngx-loading-bar>
+<div style="
+  display:grid;
+  grid-template-rows: auto 1fr auto;
+  min-height:100vh;">
+    <div class="wb-header">
+        <app-header></app-header>
+    </div>
+    <div class="container">
+        <div class="wb-content mt-5">        
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <app-footer></app-footer>
+</div>

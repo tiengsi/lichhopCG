@@ -1,0 +1,92 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="'Quản Lý địa điểm'" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button *ngIf="showCreateBtn" [routerLink]="['./add']" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        {{ "COMMON.BUTTON_ADD" | translate }}
+      </button>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <div class="d-flex justify-content-between p-2">
+      <div class="form-group form-inline">
+        <div class="input-search">
+          <input class="form-control mr-2" type="text" name="searchTerm" #searchInput placeholder="Nhập tiêu đề..." (keyup.enter)="loadLocation()"/>
+          <i class="fa fa-times" (click)="searchInput.value=''"></i>
+        </div>
+
+        <button class="btn btn-success" (click)="loadLocation()">
+          <i class="fas fa-search"></i>
+          {{ "COMMON.BUTTON_SEARCH" | translate }}
+        </button>
+      </div>
+      <select class="custom-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="loadLocation()">
+        <option [ngValue]="10">
+          10 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="30">
+          30 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="50">
+          50 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+        <option [ngValue]="100">
+          100 {{ "COMMON.ITEMS_PER_PAGE" | translate }}
+        </option>
+      </select>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col" sortable="Title" (sort)="onSort($event)">Tiêu đề</th>
+            <th scope="col" sortable="IsActive" (sort)="onSort($event)" class="text-center">Hiển thị</th>
+            <th scope="col" sortable="CreatedDate" (sort)="onSort($event)">Ngày tạo</th>
+            <th scope="col">{{ "COMMON.ACTION_COLUME" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of locations; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ item.title }}</td>
+            <td class="text-center">
+              <span class="text-success" *ngIf="item.isActive">
+                <i class="fas fa-check-circle text-success"></i>
+              </span>
+
+              <span class="text-danger" *ngIf="!item.isActive">
+                <i class="fas fa-exclamation-triangle text-danger"></i>
+              </span>
+            </td>
+            <td>{{ item.createdDate | date: "dd/MM/yyyy" }}</td>
+            <td>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button *ngIf="showEditBtn" class="btn btn-sm btn-primary" (click)="edit(item.id)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button *ngIf="showDeleteBtn" class="btn btn-sm btn-danger" (click)="delete(item)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-between p-2">
+      <ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize" (pageChange)="loadLocation()">
+      </ngb-pagination>
+      <div class="page-per-total">
+        Hiển thị {{ count }} / {{ totalCount }} bản ghi
+      </div>
+    </div>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

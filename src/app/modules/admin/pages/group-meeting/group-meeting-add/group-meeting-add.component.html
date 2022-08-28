@@ -1,0 +1,115 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="(isModify ? 'COMMON.BUTTON_EDIT' : 'COMMON.BUTTON_ADD') | translate" [class]="'card-head-lg'">
+    <ng-container ktPortletTools>
+      <button class="btn btn-secondary mr-2" [routerLink]="['/admin/group-meeting']">
+        <i class="fas fa-chevron-left"></i>
+        {{ "COMMON.BUTTON_CANCEL" | translate }}
+      </button>
+      <button class="btn btn-primary" (click)="onCreate()" [disabled]="!form.valid" *ngIf="!isModify && showCreateBtn">
+        <i class="far fa-save"></i>
+        {{ "COMMON.BUTTON_SAVE" | translate }}
+      </button>
+      <button class="btn btn-primary" (click)="onSave()" [disabled]="!form.valid" *ngIf="isModify && showEditBtn">
+        <i class="far fa-save"></i>
+        {{ "COMMON.BUTTON_EDIT_SAVE" | translate }}
+      </button>
+    </ng-container>
+  </app-portlet-header>`
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <form [formGroup]="form">
+      <div class="form-group row">
+        <label for="txtTitle" class="col-sm-2 col-form-label col-form-label-sm">Tên nhóm</label>
+        <div class="col-sm-10">
+          <textarea type="text" class="form-control" id="txtTitle" placeholder="Tên nhóm" formControlName="name"></textarea>
+          <div class="fv-plugins-message-container" *ngIf="isControlHasError('name', 'required')">
+            <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label col-form-label-sm">Chọn phòng ban</label>
+        <div class="col-sm-10 text-left">
+          <ng-select formControlName="departmentIds" [clearable]="false" name="departmentIds" [multiple]="true" placeholder="Chọn phòng ban">
+            <ng-option *ngFor="let item of deparments" [value]="item.id">{{item.name}}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label col-form-label-sm">Chọn cán bộ</label>
+        <div class="col-sm-10 text-left">
+          <ng-select
+          formControlName="userIds"
+          [clearable]="false"
+          [multiple]="true"
+          name="userIds"
+          placeholder="Chọn cán bộ"
+        >
+          <ng-option *ngFor="let item of users" [value]="item.id">{{
+            item.fullName
+          }}</ng-option>
+        </ng-select>
+        </div>
+      </div>
+
+    </form>
+    <div class="form-group row">
+      <label for="txtFullName" class="col-sm-2 col-form-label col-form-label-sm">Cán bộ ngoài hệ thống</label>
+      <div class="col-sm-10">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 50px">
+                STT
+              </th>
+              <th>
+                Họ tên
+              </th>
+              <th>
+                Email
+              </th>
+              <th>
+                Số điện thoại
+              </th>
+              <th style="width: 80px" class="text-center">
+                <a href="javascript:;" title="Thêm" (click)="addOtherParticipant()">
+                  <i class="fas fa-plus text-primary"></i>
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of otherParticipantSelected; let j = index; trackBy:trackByIndex;">
+              <td class="text-center">
+                {{j + 1}}
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="item.name" name="name{{j}}" class="form-control form-control-sm" placeholder="Tên đơn vị/ Họ tên">
+              </td>
+              <td>
+                <input type="email" [(ngModel)]="item.email" name="email{{j}}" class="form-control form-control-sm" placeholder="Email">
+              </td>
+              <td>
+                <input type="number" [(ngModel)]="item.phoneNumber" name="phoneNumber{{j}}" class="form-control form-control-sm" placeholder="Số điện thoại">
+              </td>
+              <td class="text-center">
+                <a href="javascript:;" title="Xóa" (click)="deleteOtherParticipant(item)">
+                  <i class="fas fa-trash-alt text-danger"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

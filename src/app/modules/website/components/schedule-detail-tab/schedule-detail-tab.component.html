@@ -1,0 +1,227 @@
+<div class="modal-header bg-light">
+    <h4 class="modal-title">Lịch làm việc chi tiết</h4>
+    <button type="button"
+            class="close"
+            aria-label="Close"
+            (click)="activeModal.dismiss('Cross click'); closeTab()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    <ngb-tabset [destroyOnHide]="false">
+      <ngb-tab title="Chi tiết lịch">
+        <ng-template ngbTabContent>
+          <table class="table">
+            <tbody>
+              <tr>
+                <td width="15%" class="h6">Nội dung:</td>
+                <td colspan="3">{{ scheduleDetail.scheduleTitle }}</td>
+              </tr>
+              <tr>
+                <td width="15%" class="h6">Chi tiết:</td>
+                <td colspan="3">
+                  <p [innerHTML]="scheduleDetail.scheduleContent"></p>
+                </td>
+              </tr>
+              <tr>
+                <td width="15%" class="h6">Ngày họp:</td>
+                <td width="30%">
+                  {{ scheduleDetail.scheduleDate | date: "dd/MM/yyyy" }}
+                </td>
+                <td width="15%" class="h6">Thời gian họp:</td>
+                <td width="30%">{{ scheduleDetail.scheduleTime }}</td>
+              </tr>
+              <tr>
+                <td width="15%" class="h6">Người chủ trì:</td>
+                <td width="30%">{{ scheduleDetail.officerName }}</td>
+                <td width="15%" class="h6">Đồng chủ trì:</td>
+                <td width="30%">{{ scheduleDetail.otherHost }}</td>
+              </tr>
+              <tr>
+                <td width="15%" class="h6">Địa điểm:</td>
+                <td colspan="3">{{ scheduleDetail.scheduleLocation }}</td>
+              </tr>
+              <tr>
+                <td width="15%" class="h6">Chuẩn bị:</td>
+                <td width="30%">{{ scheduleDetail.departmentPrepare }}</td>
+                <td width="15%" class="h6">Trạng thái:</td>
+                <td width="30%">
+                  <span [ngClass]="{
+                      'text-primary':
+                        scheduleDetail.scheduleStatus ===
+                        scheduleStatus.Approve,
+                      'text-success':
+                        scheduleDetail.scheduleStatus ===
+                        scheduleStatus.Release,
+                      'text-danger':
+                        scheduleDetail.scheduleStatus === scheduleStatus.Pause,
+                      'text-info':
+                        scheduleDetail.scheduleStatus === scheduleStatus.Changed
+                    }">
+                    {{
+                      mapScheduleStatus(scheduleDetail.scheduleStatus)
+                    }}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td width="15%" class="h6">Thư mời họp:</td>
+                <td colspan="3" class="text-danger">
+                  <ng-template [ngIf]="scheduleDetail.isSendSMSInvite">
+                    <p class="badge badge-primary">
+                      <strong>Đã gửi thư mời</strong>
+                    </p>
+                  </ng-template>
+                  <ng-template [ngIf]="!scheduleDetail.isSendSMSInvite">
+                    <p class="badge badge-secondary">
+                      <strong>Chưa gửi thư mời</strong>
+                    </p>
+                  </ng-template>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4" class="h6">Thành phần:</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <td width="5%">STT</td>
+                <td>Cơ quan nhận</td>
+                <td>Người nhận</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="
+                  let item of scheduleDetail.participantIsSelected;
+                  let i = index
+                ">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.departmentName }}</td>
+                <td>{{ item.receiverName }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="h6">Thành phần tham dự khác:</div>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <td width="5%">STT</td>
+                <td>Tên đơn vị/ Họ tên</td>
+                <td>Email</td>
+                <td>Số điện thoại</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="
+                  let item of scheduleDetail.otherParticipants;
+                  let i = index
+                ">
+                <td>{{ i + 1 }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.phoneNumber }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>Nhật ký</ng-template>
+        <ng-template ngbTabContent>
+          <h3 *ngIf="scheduleHistory.length == 0" class="bg-light">
+            Chưa có nhật ký nào
+          </h3>
+          <table *ngIf="scheduleHistory.length > 0"
+                 class="table table-bordered">
+            <thead>
+              <tr>
+                <td width="5%">STT</td>
+                <td>Lịch sử thay đổi</td>
+                <td width="20%">Thời gian thay đổi</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of scheduleHistory; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>
+                  <span [ngClass]="{
+                      'text-primary': item.changeTo === 'Tạo mới',
+                      'text-success': item.changeTo === 'Đã phát hành',
+                      'text-danger': item.changeTo === 'Lịch bị hoãn',
+                      'text-primary': item.changeTo === 'Đã duyệt',
+                      'text-muted': item.changeTo === 'Đang soạn thảo'
+                    }">
+                    {{ item.changeTo }}
+                  </span>
+                </td>
+                <td>{{ item.changeDate | date: "dd/MM/yyyy hh:mm a" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </ngb-tab>
+      <!--Schedule files attachment-->
+      <ngb-tab>
+        <ng-template ngbTabTitle>Tài liệu họp</ng-template>
+        <ng-template ngbTabContent>
+          <h3 *ngIf="scheduleFilesAttachment.length == 0" class="bg-light">
+            Chưa có tài liệu nào
+          </h3>
+          <table *ngIf="scheduleFilesAttachment.length > 0"
+                 class="table table-bordered">
+            <thead>
+              <tr>
+                <td width="5%">STT</td>
+                <td style="width: 30%">Tên tài liệu</td>
+                <td>Số ký hiệu</td>
+                <td>Ngày phát hành</td>
+                <td>Trích yếu</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of scheduleFilesAttachment; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>
+
+                  <a href="https://docs.google.com/gview?url={{ item.filePath }}" target="_blank">{{ item.fileName }}</a>
+
+                  <!--<a (click)="window.open('https://docs.google.com/gview?url={{ item.filePath }}','Xem file','width=100%,height=100%')">{{ item.fileName }}</a>-->
+                </td>
+                <td>{{ item.notationNumber }}</td>
+                <td>{{ item.releaseDate | date: "dd/MM/yyyy hh:mm a" }}</td>
+                <td>{{ item.quote }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>Kết luận</ng-template>
+        <ng-template ngbTabContent>
+
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>Ghi chú</ng-template>
+        <ng-template ngbTabContent>
+      
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>Điểm danh</ng-template>
+        <ng-template ngbTabContent>
+      
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+            class="btn btn-light"
+            (click)="activeModal.close('Close click'); closeTab()">
+      Đóng
+    </button>
+  </div>

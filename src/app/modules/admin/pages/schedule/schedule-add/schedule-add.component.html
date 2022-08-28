@@ -1,0 +1,677 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header
+    [title]="
+      (isModify ? 'COMMON.BUTTON_EDIT' : 'COMMON.BUTTON_ADD') | translate
+    "
+    [class]="'card-head-lg'"
+  >
+    <ng-container ktPortletTools>
+      <button class="btn btn-secondary mr-2" [routerLink]="['/admin/schedule']">
+        <i class="fas fa-chevron-left"></i>
+        {{ "COMMON.BUTTON_CANCEL" | translate }}
+      </button>
+      <div placement="left" ngbTooltip="{{!scheduleForm.form.valid || validateFilesAttachment() ? 'Vui lòng nhập đủ những trường thông tin có dấu (*)' : ''}}">
+        <button
+          class="btn btn-primary mr-2"
+          *ngIf="isCopy !== 1 && showCreateBtn"
+          (click)="onSubmit(false)"        
+          [disabled]="!scheduleForm.form.valid || validateFilesAttachment()"
+        >
+          <i class="far fa-save"></i>
+          Lưu lại
+        </button>
+      </div>
+      <button
+        class="btn btn-primary mr-2"
+        *ngIf="isCopy === 1 && showCopyBtn"
+        (click)="onCopy()"
+        [disabled]="!scheduleForm.form.valid"
+      >
+        <i class="far fa-save"></i>
+        Sao chép lịch
+      </button>
+      <!-- <button class="btn btn-success mr-2" (click)="onSubmit(true)" [disabled]="!scheduleForm.form.valid">
+        <i class="far fa-check-square"></i>
+        Lưu và duyệt lịch
+      </button> -->
+      <button
+        class="btn btn-warning"
+        *ngIf="isModify && isCopy !== 1 && showSendEmailBtn && !schedule.isAutoSendAtScheduledTime"
+        (click)="onSubmit(true, true)"
+        [disabled]="!scheduleForm.form.valid || !schedule.isActive"
+      >
+        <i class="far fa-paper-plane"></i>
+        Lưu và gửi thư mời
+      </button>
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <form #scheduleForm="ngForm">
+      <div class="form-group row" *ngIf="isModify && isCopy !== 1">
+        <label class="col-sm-2 col-form-label col-form-label-sm">
+          <strong>Xem trước gửi thư mời</strong>
+        </label>
+        <div class="col-sm-10">
+          <textarea
+            class="form-control"
+            [value]="smsPreview"
+            name="txtSmsPreview"
+            rows="3"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-2 col-form-label col-form-label-sm"
+          >Thành phần tham dự</label
+        >
+        <div class="col-sm-10">
+          <ng-select
+            [clearable]="true"
+            name="slParticipant"
+            placeholder="Nhập để tìm kiếm"
+            (change)="onChange($event)"
+          >
+            <ng-option *ngFor="let item of listParticipant" [value]="item.id">
+              <i
+                class="fas fa-users text-danger"
+                *ngIf="item.participantType === participantType.Group"
+              ></i>
+              <i
+                class="fas fa-users text-success"
+                *ngIf="item.participantType === participantType.Department"
+              ></i>
+              <i
+                class="fas fa-user text-primary"
+                *ngIf="item.participantType === participantType.User"
+              ></i>
+              {{ item.name }}
+            </ng-option>
+          </ng-select>
+
+          <table
+            class="table table-bordered mt-2"
+            *ngIf="participantIsSelected.length > 0"
+          >
+            <thead>
+              <tr>
+                <th style="width: 50px">STT</th>
+                <th>Cơ quan nhận</th>
+                <th>Người nhận</th>
+                <th style="width: 80px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of participantIsSelected; let i = index">
+                <td class="text-center">
+                  {{ i + 1 }}
+                </td>
+                <td>
+                  {{ item.departmentName }}
+                </td>
+                <td>
+                  {{ item.receiverName }}
+                </td>
+                <td class="text-center">
+                  <a
+                    href="javascript:;"
+                    title="Xóa"
+                    (click)="deleteParticipant(item)"
+                  >
+                    <i class="fas fa-trash-alt text-danger"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="txtFullName"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Thành phần tham dự khác</label
+        >
+        <div class="col-sm-10">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [(ngModel)]="schedule.isOtherParticipant"
+              name="isOtherParticipant"
+            />
+          </div>
+          <table
+            class="table table-bordered mt-7"
+            *ngIf="schedule.isOtherParticipant"
+          >
+            <thead>
+              <tr>
+                <th style="width: 50px">STT</th>
+                <th>Tên đơn vị/ Họ tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th style="width: 80px" class="text-center">
+                  <a
+                    href="javascript:;"
+                    title="Thêm"
+                    (click)="addOtherParticipant()"
+                  >
+                    <i class="fas fa-plus text-primary"></i>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let item of otherParticipantSelected;
+                  let j = index;
+                  trackBy: trackByIndex
+                "
+              >
+                <td class="text-center">
+                  {{ j + 1 }}
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    [(ngModel)]="item.name"
+                    name="name{{ j }}"
+                    class="form-control form-control-sm"
+                    placeholder="Tên đơn vị/ Họ tên"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="email"
+                    [(ngModel)]="item.email"
+                    name="email{{ j }}"
+                    class="form-control form-control-sm"
+                    placeholder="Email"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    [(ngModel)]="item.phoneNumber"
+                    name="phoneNumber{{ j }}"
+                    class="form-control form-control-sm"
+                    placeholder="Số điện thoại"
+                  />
+                </td>
+                <td class="text-center">
+                  <a
+                    href="javascript:;"
+                    title="Xóa"
+                    (click)="deleteOtherParticipant(item)"
+                  >
+                    <i class="fas fa-trash-alt text-danger"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="txtFullName"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Thành phần tham dự hiển thị</label
+        >
+        <div class="col-sm-10">
+          <!-- <input type="button" value="refesh"> -->
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="txtParticipantDisplay"
+            placeholder="Thành phần tham dự hiển thị ra ngoài"
+            [(ngModel)]="schedule.participantDisplay"
+            name="participantDisplay"
+            #participantDisplay="ngModel"
+          />
+          <!-- <div class="fv-plugins-message-container" *ngIf="participantDisplay.invalid && (participantDisplay.dirty || participantDisplay.touched)">
+            <div data-field="txtContent" data-validator="notEmpty" class="fv-help-block" *ngIf="participantDisplay.errors.required">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div> -->
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="txtFullName"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Đơn vị chuẩn bị</label
+        >
+        <div class="col-sm-10">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Đơn vị phụ trách chuẩn bị"
+            [(ngModel)]="schedule.departmentPrepare"
+            name="departmentPrepare"
+            #departmentPrepare="ngModel"
+          />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="txtFullName"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Mẫu tiêu đề</label
+        >
+        <div class="col-sm-10">
+          <ng-select
+            [(ngModel)]="schedule.scheduleTitleTemplateId"
+            [clearable]="false"
+            class="mr-2"
+            style="width: 440px"
+            name="titleTemplate"
+            #id="ngModel"
+          >
+            <ng-option *ngFor="let item of titleTemplates" [value]="item.id">{{
+              item.template
+            }}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="txtFullName"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Tiêu đề họp (*)</label
+        >
+        <div class="col-sm-10">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Tiêu đề cuộc họp"
+            required
+            [(ngModel)]="schedule.scheduleTitle"
+            name="scheduleTitle"
+            #scheduleTitle="ngModel"
+          />
+
+          <div
+            class="fv-plugins-message-container"
+            *ngIf="
+              scheduleTitle.invalid &&
+              (scheduleTitle.dirty || scheduleTitle.touched)
+            "
+          >
+            <div
+              data-field="txtContent"
+              data-validator="notEmpty"
+              class="fv-help-block"
+              *ngIf="scheduleTitle.errors.required"
+            >
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="txtScheduleDate"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          style="padding-top: 46px"
+          >Ngày / Giờ (*)</label
+        >
+        <div class="col-sm-3">
+          <div class="input-group" style="margin-top: 38px">
+            <input
+              class="form-control"
+              id="txtScheduleDate"
+              placeholder="Năm-Tháng-Ngày"
+              required
+              name="dp"
+              required
+              name="name"
+              [(ngModel)]="scheduleDate"
+              #name="ngModel"
+              ngbDatepicker
+              (ngModelChange)="showLog()"
+              #datePicker="ngbDatepicker"
+              #d="ngbDatepicker"
+              (click)="d.toggle()"
+              placement="left" ngbTooltip="Ngày bắt đầu"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-outline-secondary calendar"
+                (click)="d.toggle()"
+                type="button"
+              >
+                <i class="fas fa-calendar-week"></i>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="fv-plugins-message-container"
+            *ngIf="name.invalid && (name.dirty || name.touched)"
+          >
+            <div
+              data-field="txtContent"
+              data-validator="notEmpty"
+              class="fv-help-block"
+              *ngIf="name.errors.required"
+            >
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <ngb-timepicker
+            [(ngModel)]="scheduleTime"
+            name="scheduleTime"
+            [disabled]="compareDate < 0"
+            (ngModelChange)="checkPickDate()"
+            [minuteStep]="minuteStep"
+            placement="left" ngbTooltip="Thời gian bắt đầu"
+          ></ngb-timepicker>
+        </div>
+
+        <div class="col-sm-3">
+          <div class="input-group" style="margin-top: 38px">
+            <input class="form-control" id="txtScheduleEndDate" placeholder="Năm-Tháng-Ngày" required name="dp2" required
+              name="name2" [(ngModel)]="scheduleEndDate" #name="ngModel" ngbDatepicker
+              #datePicker2="ngbDatepicker" #d2="ngbDatepicker" (click)="d2.toggle()" placement="left" ngbTooltip="Ngày kết thúc" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button">
+                <i class="fas fa-calendar-week"></i>
+              </button>
+            </div>
+          </div>
+        
+          <div class="fv-plugins-message-container" *ngIf="name.invalid && (name.dirty || name.touched)">
+            <div data-field="txtContent" data-validator="notEmpty" class="fv-help-block" *ngIf="name.errors.required">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <ngb-timepicker placement="left" ngbTooltip="Thời gian kết thúc" [(ngModel)]="scheduleEndTime" name="scheduleEndTime"
+            [minuteStep]="minuteStep"></ngb-timepicker>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="slCategory"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Người chủ trì</label
+        >
+        <div class="col-sm-10">
+          <div class="d-flex">
+            <ng-select
+              [(ngModel)]="schedule.id"
+              [clearable]="false"
+              class="mr-2"
+              style="width: 540px"
+              name="id"
+              #id="ngModel"
+            >
+              <ng-option *ngFor="let item of users" [value]="item.id">{{
+                item.fullName
+              }}</ng-option>
+            </ng-select>
+
+            <input
+              type="text"
+              class="form-control"
+              id="txtOtherHost"
+              placeholder="Người chủ trì khác"
+              [(ngModel)]="schedule.otherHost"
+              name="txtOtherHost"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtIOfficer" class="col-sm-2 col-form-label col-form-label-sm">Lãnh đạo tham dự</label>
+        <div class="col-sm-10">
+          <div class="d-flex">                  
+            <textarea type="text" class="form-control" id="txtIncludedOfficer" placeholder="Lãnh đạo"
+              [(ngModel)]="schedule.includedOfficer" name="txtIncludedOfficer" ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="txtPosition"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Chọn địa điểm</label
+        >
+        <div class="col-sm-10">
+          <div class="d-flex">
+            <ng-select
+              [(ngModel)]="schedule.locationId"
+              [clearable]="false"
+              class="mr-2"
+              style="width: 540px"
+              name="locationId"
+              #id="ngModel"
+            >
+              <ng-option *ngFor="let item of locations" [value]="item.id">{{
+                item.title
+              }}</ng-option>
+            </ng-select>
+            <input
+              type="text"
+              class="form-control"
+              id="txtOtherPosition"
+              placeholder="Địa điểm tổ chức khác"
+              [(ngModel)]="schedule.otherLocation"
+              name="txtOtherPosition"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="txtMeetingLink" class="col-sm-2 col-form-label col-form-label-sm">Đường dẫn online</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="txtMeetingLink" placeholder="Đường dẫn cuộc họp online"
+            [(ngModel)]="schedule.meetingLink" name="txtMeetingLink" />
+        </div>
+      </div>
+
+      <div class="form-group row" *ngIf="isInvite || isModify">
+        <label for="slBrandname" class="col-sm-2 col-form-label col-form-label-sm">Brand Name gửi thử mời</label>
+        <div class="col-sm-10">          
+          <ng-select [(ngModel)]="schedule.brandNameId" [clearable]="false" name="id"
+            #id="ngModel">
+            <ng-option *ngFor="let item of brandNames" [value]="item.brandNameId">{{
+              item.branchName
+              }}</ng-option>
+          </ng-select>              
+        </div>
+      </div>     
+
+      <div *ngIf="isInvite||isModify" class="form-group row">
+        <label for="isAutoSendAtScheduledTime" class="col-sm-2 col-form-label col-form-label-sm">Gửi tự động</label>
+        <div class="col-sm-10">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="schedule.isAutoSendAtScheduledTime"
+              name="isAutoSendAtScheduledTime" />
+          </div>          
+        </div>
+      </div>
+
+      <div class="form-group row" *ngIf="schedule.isAutoSendAtScheduledTime && (isInvite||isModify)">
+        <label for="txtSendMailDate" class="col-sm-2 col-form-label col-form-label-sm" style="padding-top: 46px">Thời gian gửi
+          (*)</label>
+        <div class="col-sm-3">
+          <div class="input-group" style="margin-top: 38px">
+            <input class="form-control" id="txtSendMailDate" placeholder="Năm-Tháng-Ngày" required name="dp" required
+              name="name" [(ngModel)]="sendMailDate" #name="ngModel" ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()" />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+                <i class="fas fa-calendar-week"></i>
+              </button>
+            </div>
+          </div>
+      
+          <div class="fv-plugins-message-container" *ngIf="name.invalid && (name.dirty || name.touched)">
+            <div data-field="txtContent" data-validator="notEmpty" class="fv-help-block" *ngIf="name.errors.required">
+              {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-7">
+          <ngb-timepicker [(ngModel)]="sendMailTime" name="sendMailTime" [minuteStep]="minuteStep"></ngb-timepicker>
+        </div>
+      </div>
+      
+      <div class="form-group row">
+        <label
+          for="txtPosition"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Tài liệu họp</label
+        >
+        <div class="col-sm-10">
+          <button
+            class="col-sm-2 btn btn-secondary"
+            (click)="addFileAttachment()"
+          >
+            <i class="fas fa-file-upload mr-2"></i> Thêm tài liệu
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group row" *ngIf="filesAttachment.length > 0">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+          <div class="col-md-12 mt-5">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width: 5%">STT</th>
+                  <th>File đính kèm (*)</th>
+                  <th style="width: 15%">Số ký hiệu (*)</th>
+                  <th style="width: 15%">Ngày ban hành (*)</th>
+                  <th style="width: 15%">Trích yếu (*)</th>
+                  <th style="width: 5%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of filesAttachment; let index = index">
+                  <td>{{ index + 1 }}</td>
+                  <td *ngIf="!item.fileName">
+                    <input
+                      type="file"
+                      title="Chọn file"
+                      ng2FileSelect
+                      [uploader]="uploader"
+                      (onFileSelected)="onFileSelected($event, index)"
+                      required
+                    />
+                  </td>
+                  <td *ngIf="item.fileName">{{ item.fileName }}</td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="NotationiNumber-{{ index }}"
+                      name="notationNumber-{{ index }}"
+                      [(ngModel)]="item.notationNumber"
+                      required
+                    />
+                  </td>
+                  <td>
+                    <input
+                      class="form-control"
+                      id="txtReleaseDate-{{ index }}"
+                      placeholder="Năm-Tháng-Ngày"
+                      required
+                      name="dp"
+                      name="releaseDate-{{ index }}"
+                      [(ngModel)]="item.releaseDateStr"
+                      #name="ngModel"
+                      ngbDatepicker
+                      #d="ngbDatepicker"
+                      (click)="d.toggle()"
+                      autocomplete="off"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="quote-{{ index }}"
+                      [(ngModel)]="item.quote"
+                      required
+                    />
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-xs"
+                      (click)="removeFileAttachment(index)"
+                    >
+                      <span class="glyphicon glyphicon-trash"></span>
+                      xóa
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label
+          for="txtFullName"
+          class="col-sm-2 col-form-label col-form-label-sm"
+          >Nội dung họp</label
+        >
+        <div class="col-sm-10">
+          <angular-editor
+            [(ngModel)]="schedule.scheduleContent"
+            name="scheduleContent"
+            #scheduleContent="ngModel"
+            placeholder="Nội dung cuộc họp"
+            [config]="config"
+          ></angular-editor>
+          <!-- <textarea type="text" class="form-control form-control-sm" id="txtContent" placeholder="Nội dung cuộc họp"
+            [(ngModel)]="schedule.scheduleContent" name="scheduleContent" #scheduleContent="ngModel"></textarea> -->
+        </div>
+      </div>
+
+      <!-- <div class="form-group row">
+        <label for="chkIsActive" class="col-sm-2 col-form-label col-form-label-sm"></label>
+        <div class="col-sm-10 d-flex">
+          <div class="form-check mr-5">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="schedule.isSendEmail" name="isSendEmail">
+            <label class="form-check-label" for="flexCheckDefault">
+              Gửi Email
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="schedule.iSendSMS" name="isSendSMS">
+            <label class="form-check-label" for="flexCheckDefault">
+              Gửi SMS
+            </label>
+          </div>
+        </div>
+      </div> -->
+    </form>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

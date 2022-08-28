@@ -1,0 +1,17 @@
+:host {
+    background: #f6f8f9;
+    font-family: Arial, Helvetica, sans-serif;
+    .wb-header, .wb-content {
+        background: #fff;
+        min-height: 100px;
+    }
+
+    .wb-header {
+        background: #005FB7;
+        height: 163px;
+        img {
+          height: 163px;
+        }
+    }
+
+}

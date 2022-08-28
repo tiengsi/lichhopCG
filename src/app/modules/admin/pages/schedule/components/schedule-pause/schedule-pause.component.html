@@ -1,0 +1,160 @@
+<div class="modal-header">
+  <h4 class="modal-title">Hoãn lịch họp lúc {{schedule.scheduleTime}} ngày {{scheduleDate}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="closeModal(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form>
+    <div class="form-group row">
+      <label class="col-sm-12 col-form-label col-form-label-sm">Thành phần tham dự</label>
+      <div class="col-sm-12">
+        <ng-select [clearable]="true" name="slParticipant" placeholder="Nhập để tìm kiếm" (change)="onChange($event)">
+          <ng-option *ngFor="let item of listParticipant" [value]="item.id">
+            <i class="fas fa-users text-danger" *ngIf="item.participantType === participantType.Group"></i>
+            <i class="fas fa-users text-success" *ngIf="item.participantType === participantType.Department"></i>
+            <i class="fas fa-user text-primary"  *ngIf="item.participantType === participantType.User"></i>
+            {{item.name}}
+          </ng-option>
+        </ng-select>
+        <table class="table table-bordered mt-2" *ngIf="participantIsSelected.length > 0">
+          <thead>
+            <tr>
+              <th style="width: 50px">
+                STT
+              </th>
+              <th>
+                Cơ quan nhận
+              </th>
+              <th>
+                Người nhận
+              </th>
+              <th style="width: 80px">
+
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of participantIsSelected; let i = index">
+              <td class="text-center">
+                {{i + 1}}
+              </td>
+              <td>
+                {{ item.departmentName }}
+              </td>
+              <td>
+                {{ item.receiverName }}
+              </td>
+              <td class="text-center">
+                <a href="javascript:;" title="Xóa" (click)="deleteParticipant(item)">
+                  <i class="fas fa-trash-alt text-danger"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="txtFullName" class="col-sm-12 col-form-label col-form-label-sm">Thành phần tham dự khác</label>
+      <div class="col-sm-12">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 50px">
+                STT
+              </th>
+              <th>
+                Tên đơn vị/ Họ tên
+              </th>
+              <th>
+                Email
+              </th>
+              <th>
+                Số điện thoại
+              </th>
+              <th style="width: 80px" class="text-center">
+                <a href="javascript:;" title="Thêm" (click)="addOtherParticipant()">
+                  <i class="fas fa-plus text-primary"></i>
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of otherParticipantSelected; let j = index;">
+              <td class="text-center">
+                {{j + 1}}
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="item.name" name="name{{j}}" class="form-control form-control-sm" placeholder="Tên đơn vị/ Họ tên">
+              </td>
+              <td>
+                <input type="email" [(ngModel)]="item.email" name="email{{j}}" class="form-control form-control-sm" placeholder="Email">
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="item.phoneNumber" name="phoneNumber{{j}}" class="form-control form-control-sm" placeholder="Số điện thoại">
+              </td>
+              <td class="text-center">
+                <a href="javascript:;" title="Xóa" (click)="deleteOtherParticipant(item)">
+                  <i class="fas fa-trash-alt text-danger"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="slCategory" class="col-sm-2 col-form-label col-form-label-sm">Người chủ trì</label>
+      <div class="col-sm-4 pt-2">
+        {{schedule.officerName}}
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="slCategory" class="col-sm-2 col-form-label col-form-label-sm">Ngày họp</label>
+      <div class="col-sm-4  pt-2">
+        <b>{{scheduleDate}} Lúc {{schedule.scheduleTime}}</b>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="slCategory" class="col-sm-2 col-form-label col-form-label-sm">Địa điểm</label>
+      <div class="col-sm-4  pt-2">
+        {{schedule.otherLocation}}
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="chkIsActive" class="col-sm-2 col-form-label col-form-label-sm"></label>
+      <div class="col-sm-10 d-flex">
+        <div class="form-check mr-5">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="schedule.isSendEmail" name="isSendEmail">
+          <label class="form-check-label" for="flexCheckDefault">
+            Gửi Email
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="schedule.iSendSMS" name="isSendSMS">
+          <label class="form-check-label" for="flexCheckDefault">
+            Gửi SMS
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="schedule.iSendSMS">
+      <label for="slBrandname" class="col-sm-2 col-form-label col-form-label-sm">Brand Name gửi thử mời</label>
+      <div class="col-sm-10">
+        <ng-select [(ngModel)]="schedule.brandNameId" [clearable]="false" name="id" #id="ngModel">
+          <ng-option *ngFor="let item of brandNames" [value]="item.brandNameId">{{
+            item.branchName
+            }}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="closeModal(false)"><i class="fas fa-times"></i>Đóng</button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()"><i class="far fa-save"></i>Lưu và gửi thư</button>
+</div>

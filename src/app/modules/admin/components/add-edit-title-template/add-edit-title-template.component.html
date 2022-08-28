@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{title}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="closeModal(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>Mẫu tiêu đề</label>
+      <input type="text" placeholder="Mẫu tiêu đề" class="form-control" formControlName="template">
+      <div class="fv-plugins-message-container" *ngIf="isControlHasError('template', 'required')">
+        <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+          Bạn cần phải nhập trường này!
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="closeModal(false)"><i class="fas fa-times"></i>Đóng</button>
+  <button type="button" class="btn btn-primary" *ngIf="!isModify" (click)="onCreate()"><i class="far fa-save"></i>Thêm mới</button>
+  <button type="button" class="btn btn-primary" *ngIf="isModify"  (click)="onSave()"><i class="far fa-save"></i>Lưu lại</button>
+</div>

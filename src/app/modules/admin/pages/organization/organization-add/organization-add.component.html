@@ -1,0 +1,99 @@
+<app-portlet>
+    <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+    <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+    <app-portlet-header [title]="(isModify ? 'COMMON.BUTTON_EDIT' : 'COMMON.BUTTON_ADD') | translate"
+        [class]="'card-head-lg'">
+        <ng-container ktPortletTools>
+            <button class="btn btn-secondary mr-2" [routerLink]="['/admin/organization']">
+                <i class="fas fa-chevron-left"></i>
+                {{ "COMMON.BUTTON_CANCEL" | translate }}
+            </button>
+            <button class="btn btn-primary" (click)="onCreate()" [disabled]="!form.valid" *ngIf="!isModify && showCreateBtn">
+                <i class="far fa-save"></i>
+                {{ "COMMON.BUTTON_SAVE" | translate }}
+            </button>
+            <button class="btn btn-primary" (click)="onSave()" [disabled]="!form.valid" *ngIf="isModify && showEditBtn">
+                <i class="far fa-save"></i>
+                {{ "COMMON.BUTTON_EDIT_SAVE" | translate }}
+            </button>
+        </ng-container>
+    </app-portlet-header>`
+    <!-- end::Header -->
+
+    <!-- start::Body (attribute: ktPortletBody) -->
+    <app-portlet-body>
+        <form [formGroup]="form">
+            <div class="form-group row">
+                <label for="txtName" class="col-sm-2 col-form-label col-form-label-sm">Tên đơn vị</label>
+                <div class="col-sm-10">
+                    <textarea type="text" class="form-control" id="txtName" placeholder="Tên đon vị"
+                        formControlName="name"></textarea>
+                    <div class="fv-plugins-message-container" *ngIf="isControlHasError('title', 'required')">
+                        <div data-field="username" data-validator="notEmpty" class="fv-help-block">
+                            {{ "AUTH.VALIDATION.REQUIRED_FIELD" | translate }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="txtOtherName" class="col-sm-2 col-form-label col-form-label-sm">Tên khác</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-sm" id="txtOtherName" placeholder="Tên khác"
+                        formControlName="otherName" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="txtCodeName" class="col-sm-2 col-form-label col-form-label-sm">Mã đơn vị</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-sm" id="txtCodeName" placeholder="Mã đơn vị"
+                        formControlName="codeName" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="slOrganize" class="col-sm-2 col-form-label col-form-label-sm">Thuộc đơn vị</label>
+                <div class="col-sm-10">
+                    <ng-select [clearable]="false" id="slUser" formControlName="organizeParentId">
+                        <ng-option *ngFor="let item of selectList" [value]="item.id">
+                            {{item.name}}
+                        </ng-option>
+                    </ng-select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="txtAddress" class="col-sm-2 col-form-label col-form-label-sm">Địa chỉ</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-sm" id="txtAddress" placeholder="Địa chỉ"
+                        formControlName="address" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="txtPhone" class="col-sm-2 col-form-label col-form-label-sm">Số điện thoại</label>
+                <div class="col-sm-10">
+                    <input type="tel" class="form-control form-control-sm" id="txtPhone" placeholder="Số điện thoại"
+                        formControlName="phone" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="txtOrder" class="col-sm-2 col-form-label col-form-label-sm">Thứ tự</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control form-control-sm" id="txtOrder" placeholder="Thứ tự" [defaultValue]="0"
+                        formControlName="order" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="chkIsActive" class="col-sm-2 col-form-label col-form-label-sm">Hiển thị</label>
+                <div class="col-sm-10 text-left">
+                    <input type="checkbox" class="form-control-sm" id="chkIsActive" formControlName="isActive" />
+                </div>
+            </div>
+        </form>
+    </app-portlet-body>
+    <!-- end::Body -->
+</app-portlet>

@@ -1,0 +1,11 @@
+:host {
+   .row-schedule {
+        &:hover {
+            background: #ccc;
+            cursor: pointer;
+        }
+        &.active {
+            background-color: rgb(204, 202, 72);
+        }
+    }
+}

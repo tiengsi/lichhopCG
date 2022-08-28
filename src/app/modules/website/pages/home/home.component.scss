@@ -1,0 +1,207 @@
+:host {
+  padding: 15px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .wb-notice-weekly {
+    padding: 10px 0;
+    line-height: 25px;
+  }
+
+  .wb-week-tab {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: row;
+
+    ul {
+      margin: 0px;
+      padding: 0px;
+      list-style: none;
+
+      li {
+        display: inline-block;
+
+        a {
+          display: block;
+          padding: 5px 20px;
+          color: #2971a4;
+          text-align: center;
+          background: #ebeded;
+
+          span {
+            color: #202124;
+            display: block;
+          }
+        }
+
+        a.active,
+        a:hover {
+          color: #fff;
+          background: #2971a4;
+
+          span {
+            color: #fff;
+          }
+        }
+      }
+
+      li:first-child {
+        a {
+          border-radius: 5px 0px 0px 0px;
+        }
+      }
+
+      li:last-child {
+        a {
+          border-radius: 0px 5px 0px 0px;
+        }
+      }
+    }
+  }
+
+  .wb-schedule-table {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: wrap;
+
+    .date_left {
+      background: #ffffcc;
+      text-align: center;
+      padding: 5px 0;
+    }
+
+    .lich_Header {
+      background-color: #c2ceda;
+      border-right: solid 2px #f2f9ff;
+      height: 40px;
+      font-weight: bold;
+    }
+
+    .clscontentLich {
+      tbody {
+        flex-wrap: wrap;
+
+        tr {
+          width: 100%;
+
+          td {
+            vertical-align: middle;
+          }
+        }
+      }
+
+      .date_left {
+        border-bottom: 2px solid #c2ceda;
+        background-color: white;
+        padding: 0;
+        border-left: 2px solid #c2ceda;
+        border-right: 2px solid #c2ceda;
+      }
+
+      .date_right {
+        border-bottom: 2px solid #c2ceda;
+        background-color: white;
+        padding: 0;
+        border-right: 2px solid #c2ceda;
+        line-height: 25px;
+
+        .Lich_ChiTiet_End {
+          border-right: 2px solid #c2ceda;
+          padding: 5px;
+          height: 40px;
+          color: #003399;
+        }
+
+        .Lich_ChiTiet {
+          border-right: 1px solid #c2ceda;
+          font: 13px Arial;
+          padding: 5px;
+          color: #003399;
+          line-height: 21px;
+
+          .btn-expan-all {
+            text-align: right;
+            float: right;
+            font-size: 11px;
+            color: #28a745;
+          }
+
+          .hide {
+            display: none;
+          }
+
+          .show {
+            display: block;
+          }
+        }
+
+        .wrapper-content {
+          width: 100%; // chiều rộng bằng khối bao nó
+          white-space: pre-wrap;
+          overflow: hidden; // ẩn các nội dung khi kích thước lớn hơn chiều rộng khối bên ngoài
+          text-overflow: ellipsis; //thêm 3 dấu chấm ở cuối
+          -webkit-line-clamp: 3; // số dòng muốn hiển thị
+          -webkit-box-orient: vertical;
+          display: -webkit-box;
+        }
+      }
+
+      .detail-table-schedule {
+        tbody {
+          tr {
+            td {
+              border-bottom: 1px solid #c2ceda;
+            }
+          }
+
+          tr:last-child {
+            td {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .wb-no-data {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 20px 0px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  .dark-modal .modal-content {
+    background-color: #292b2c;
+    color: white;
+  }
+
+  .dark-modal .close {
+    color: white;
+  }
+
+  .light-blue-backdrop {
+    background-color: #5cb3fd;
+  }
+
+  .txt-warning {
+    color: #f08501 !important;
+  }
+
+  .txt-info {
+    color: #ca03a8 !important;
+  }
+
+  .text-status-change {
+    font-size: 10px;
+  }
+
+  .wb-schedule-table a {
+    color: #3039a2;
+  }
+}

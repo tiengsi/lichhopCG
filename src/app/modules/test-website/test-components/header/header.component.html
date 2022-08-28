@@ -1,0 +1,107 @@
+<!--<div class="navbar navbar-expand navbar-light d-flex justify-content-between" style="height: 80px; background-color: rgba(41, 128, 185, 0.8);">
+  <a class="navbar-brand" href="/">
+    <img width="50px" height="50px" src={{imgPath}} alt={{navBarText}}>
+    <span class="ml-2 font-weight-bold" style="font-size: large; color: white;">{{navBarText}}</span>
+  </a>
+  <div id="nav-block" class="d-flex align-items-baseline navbar-brand mt-5">-->
+<!-- <a class="m-2" href="/scheduler/poll"><h4 class="font-weight-bold">Lấy ý kiến <span><i class="fas fa-poll" style="color: white;"></i></span></h4></a> -->
+<!--<a class="m-2" href="/scheduler/recent-schedule"><h4 class="font-weight-bold">Lịch gần nhất <span><i class="fas fa-clock" style="color: white;"></i></span></h4></a>
+<a class="m-2" href="/scheduler/personal-schedule"><h4 class="font-weight-bold">Lịch cá nhân <span><i class="fas fa-user-clock" style="color: white;"></i></span></h4></a>-->
+<!-- <a class="m-2" href="/scheduler/personal-documents"><h4 class="font-weight-bold">Tài liệu cá nhân <span><i class="fas fa-file" style="color: white;"></i></span></h4></a> -->
+<!--<a class="m-2" href="/scheduler/department-schedule"><h4 class="font-weight-bold">Lịch đơn vị <span><i class="fas fa-calendar" style="color: white;"></i></span></h4></a>-->
+<!-- <a class="m-2" href="/scheduler/documents"><h4 class="font-weight-bold">Tìm kiếm tài liệu <span><i class="fas fa-book" style="color: white;"></i></span></h4></a>
+<a class="m-2" href="#"><h4 class="font-weight-bold">Liên kết khác <span><i  style="color: white;" class="fas fa-link"></i></span></h4></a> -->
+<!--<div class="m-2 ml-8 d-flex user-area" [hidden]="isHidden" (click)="toggleBox()">
+      <div class="row">
+        <i class="mr-3 fa fa-user-circle" style="color: white;" aria-hidden="true"></i><span><p class="user-text">Hi, {{displayName}}</p></span>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<div class="page-nav">
+  <div class="container">
+    <div class="row">
+      <div class="nav-wrapper">
+        <a [routerLink]="['/scheduler']" class="nav-logo">
+          <img src="{{imgPath}}" alt="" width="55px">
+          {{navBarText}}
+        </a>
+        <div class="nav-list flex-grow-1 d-flex justify-content-center">
+          <a [routerLink]="['/scheduler/recent-schedule']" class="nav-item">
+            <img src="assets/img/icon-calender-white.png" alt="icon lich" width="24px">
+            Lịch gần nhất
+          </a>
+          <a [routerLink]="['/scheduler/personal-schedule']" class="nav-item  ">
+            <img src="assets/img/icon-day-white.png" alt="icon lich" width="24px">
+            Lịch của tôi
+          </a>
+          <a [routerLink]="['/scheduler/department-schedule']" class="nav-item">
+            <img src="assets/img/icon-group-user-white.png" alt="icon lich" width="24px">
+            Lịch đơn vị
+          </a>
+        </div>
+        <!--<div class="m-2 ml-8 d-flex user-area" [hidden]="isHidden" (click)="toggleBox()">
+          <div class="row">
+            <i class="mr-3 fa fa-user-circle" style="color: white;" aria-hidden="true"></i><span><p class="user-text">Hi, {{displayName}}</p></span>
+          </div>
+        </div>-->
+
+        <div class="user-block">
+          <img class="avatar" src="assets/img/avatar.png" alt="avatar" width="48px">
+          <span>{{displayName}}</span>
+          <!--<div class="user-block-extend">
+            <div class="user-block-extend-row">
+              <span>Đăng xuất</span>
+            </div>
+          </div>-->
+          <div id="logout" class="user-block-extend">
+            <div>
+              <p class="user-block-extend-row" [hidden]="!isAdmin" (click)="goToAdminPage()" style="margin: 3px; font-weight: bold; cursor: pointer;">Quản trị nội dung</p>
+              <hr [hidden]="!isAdmin">
+              <p class="user-block-extend-row" (click)="changePass()" style="margin: 3px; font-weight: bold; cursor: pointer;">Thay đổi mật khẩu</p>
+              <hr>
+              <p class="user-block-extend-row" (click)="logOut()" style="margin: 3px; font-weight: bold; cursor: pointer;">Đăng xuất</p>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="icon-mobile-menu ml-3">
+          <img src="assets/img/icon-menu-white.png" alt="icon menu" width="32px">
+        </div>
+        <div class="nav-mobile-wrapper">
+          <div class="icon-mobile-close-menu">
+            <img src="assets/img/icon-delete.png" alt="icon menu" width="20px">
+          </div>
+
+          <div href="#" class="user-block">
+            <img class="avatar" src="assets/img/avatar.png" alt="avatar" width="48px">
+            <span>Hi, Lich Tran</span>
+          </div>
+          <a href="#" class="btn-account">
+            <span>Đăng xuất</span>
+          </a>
+
+
+          <div class="nav-mobile-1">
+            <div class="nav-mobile-1__item active">
+              <a href="/scheduler/recent-schedule">Lịch gần nhất</a>
+            </div>
+          </div>
+
+          <div class="nav-mobile-1">
+            <div class="nav-mobile-1__item">
+              <a href="/scheduler/personal-schedule">Lịch cá nhân</a>
+            </div>
+          </div>
+
+          <div class="nav-mobile-1">
+            <div class="nav-mobile-1__item">
+              <a href="/scheduler/department-schedule">Lịch đơn vị</a>
+            </div>
+          </div>
+
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>

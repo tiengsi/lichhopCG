@@ -1,0 +1,80 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header [title]="'Quản lý email logs'" [class]="'card-head-lg'">
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body style="padding: 10px;">
+    <div class="row">
+      <div class="col-md-4 border-right">
+        <!-- <div class="search-schedule d-flex">
+          <input type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm">
+          <button class="btn btn-primary ml-2">
+            <i class="fas fa-search"></i>
+          </button>
+        </div> -->
+        <div class="result-schedule">
+          <div class="total-schedule mt-3 mb-2 d-flex justify-content-between">
+            <span>
+              Tổng: <span class="text-danger">{{scheduleTotalCount}}</span>
+            </span>
+            <div class="paging">
+              <ngb-pagination [collectionSize]="scheduleTotalCount" [(page)]="schedulePage"
+                [pageSize]="schedulePageSize" (pageChange)="loadSchedule()">
+              </ngb-pagination>
+            </div>
+          </div>
+          <div [perfectScrollbar]="{ wheelPropagation: false }"
+            [ngStyle]="{ 'max-height': '50vh', position: 'relative' }" class="scroll" *ngIf="schedules.length > 0">
+            <div class="row-schedule border-top" *ngFor="let item of schedules" (click)="getSchedule(item.scheduleId)"
+              [ngClass]="{'active': getActive(item.scheduleId)}">
+              <div class="p-1">
+                <b>Thời gian họp: <span class="text-danger">{{ item.scheduleDate | date: "dd/MM/yyyy" }} lúc {{
+                    item.scheduleTime }}</span></b>
+              </div>
+              <div class="p-1">
+                <b>Người chủ trì: <span class="text-primary">{{ item.officerName }}</span></b>
+              </div>
+              <div class="p-1">
+                <b>Địa điểm: {{ item.otherLocation }}</b>
+              </div>
+              <div class="p-1">
+                {{ item.scheduleContent }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="col-md-8" *ngIf="schedule">
+        <div class="tab" style="margin-bottom: -1px;">
+          <ul class="nav nav-tabs">
+            <li class="nav-item" *ngFor="let item of tabs" style="cursor: pointer;">
+              <a class="nav-link" [ngClass]="{'active': item.id === tabSeleted}" aria-current="page"
+                (click)="selectTab(item.id)">
+                <b>{{item.name}}</b>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="tab-content">
+          <div *ngIf="tabSeleted === 1" class="border p-3">
+            <app-schedule-detail [schedule]="schedule"></app-schedule-detail>
+          </div>
+          <div *ngIf="tabSeleted === 2" class="border p-3">
+            <app-email-sms-log [schedule]="schedule"></app-email-sms-log>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 text-danger text-center" *ngIf="!schedule">
+        Hãy chọn lịch để xem!
+      </div>
+    </div>
+
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>

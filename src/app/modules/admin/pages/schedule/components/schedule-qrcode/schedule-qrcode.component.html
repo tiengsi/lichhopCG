@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h4 class="modal-title">Danh sách tài liệu chia sẻ</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="row">
+          <div class="col-10">
+            <table class="table table-hover table-striped">
+                <thead class="thead-light">
+                    <th>Số thứ tự</th>
+                    <th>Tên tài liệu</th>
+                    <th>Chia sẻ <span><input class="ml-2" id="checkAll" (change)="onSelectAll()" type="checkbox"></span></th>                    
+                </thead>
+                <tbody>
+                    <tr *ngFor="let file of scheduleFilesAttachment; let index = index;">
+                        <td>{{index + 1}}</td>
+                        <td><a href={{file.filePath}}></a> {{file.fileName}}</td>
+                        <td><input [checked]="file.isShare" value={{file.id}} class="checkOne" type="checkbox"></td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+          <div class="col-2">
+              <div class="d-flex flex-column justify-content-center align-content-center">                
+                <img style="width: 200px;" src={{src}} alt="">            
+                <a download="qrCode.png" class="btn btn-primary" href="{{'data:image/png;base64,' + qrString}}">Tải QR Code</a>
+                <!-- <button (click)="downloadQRImage()" class="btn btn-primary">Tải QR Code</button> -->                
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="closeModal(false)"><i class="fas fa-times"></i>Đóng</button>
+    <button type="button" class="btn btn-primary" (click)="onSubmit()"><i class="far fa-save"></i>Lưu</button>
+  </div>
+  
+

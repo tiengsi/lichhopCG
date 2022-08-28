@@ -1,0 +1,153 @@
+<app-portlet>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '~/core/_crud/models/data-sources/_base.datasource.ts' (loading$) -->
+  <app-portlet-header
+    [title]="'Cấu Hình Website - Hình Ảnh'"
+    [class]="'card-head-lg'"
+  >
+    <ng-container ktPortletTools>
+
+    </ng-container>
+  </app-portlet-header>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: ktPortletBody) -->
+  <app-portlet-body>
+    <form #settingForm="ngForm">
+      <div class="form-group row">
+        <label for="favicon" class="col-sm-2 col-form-label col-form-label-sm"
+          >Favicon</label
+        >
+        <div class="col-sm-10">
+          <img *ngIf="faviconSetting"
+            src="{{ faviconSetting.settingValue }}"
+            class="img-thumbnail img-responsive"
+          />
+          <button
+            class="btn btn-success btn-sm ml-10"
+            (click)="openUpdateImageModal(faviconSetting.settingKey, editImageContent)"
+          >
+            Upload Favicon
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="favicon" class="col-sm-2 col-form-label col-form-label-sm"
+          >Banner</label
+        >
+        <div class="col-sm-10">
+          <img *ngIf="bannerSetting"
+            src="{{ bannerSetting.settingValue }}"
+            class="img-thumbnail img-responsive"
+            style="max-width: 200px"
+          />
+          <button
+            class="btn btn-success btn-sm ml-10"
+            (click)="openUpdateImageModal(bannerSetting.settingKey, editImageContent)"
+          >
+            Upload Banner
+          </button>
+        </div>
+      </div>
+    </form>
+  </app-portlet-body>
+  <!-- end::Body -->
+</app-portlet>
+
+<ng-template #editImageContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Thay đổi ảnh</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <div
+          ng2FileDrop
+          [ngClass]="{ 'nv-file-over': hasBaseDropZoneOver }"
+          (fileOver)="fileOverBase($event)"
+          [uploader]="uploader"
+          class="card bg-faded p-3 text-center my-drop-zone"
+        >
+          <i class="fa fa-upload fa-3x"></i>
+          Kéo thả ảnh vào đây <br />
+
+          hoặc
+          <input
+            type="file"
+            title="Chọn ảnh"
+            ng2FileSelect
+            [uploader]="uploader"
+          />
+        </div>
+
+        <table class="table" *ngIf="uploader?.queue?.length > 0">
+          <thead>
+            <tr>
+              <th width="50%">Ảnh</th>
+              <th>Dung lượng</th>
+              <th>Progress</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <td>
+                <strong>{{ item?.file?.name }}</strong>
+              </td>
+              <td *ngIf="uploader.options.isHTML5" nowrap>
+                {{ item?.file?.size / 1024 / 1024 | number: ".2" }} MB
+              </td>
+              <td *ngIf="uploader.options.isHTML5">
+                <div class="progress" style="margin-bottom: 0">
+                  <div
+                    class="progress-bar"
+                    role="progressbar"
+                    [ngStyle]="{ width: item.progress + '%' }"
+                  ></div>
+                </div>
+              </td>
+              <td class="text-center">
+                <i class="fas fa-check-circle" *ngIf="item.isSuccess"></i>
+
+                <i
+                  *ngIf="item.isError"
+                  class="fas fa-exclamation-triangle"
+                ></i>
+              </td>
+              <td nowrap>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  [disabled] = "uploader?.queue?.length == 0"
+                  (click)="item.remove()"
+                >
+                  Xóa
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="onSaveImage()"
+    >
+      <i class="far fa-save"></i>
+      Lưu Lại
+    </button>
+  </div>
+</ng-template>

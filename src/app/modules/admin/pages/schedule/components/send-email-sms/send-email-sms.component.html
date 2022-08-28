@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <h4 class="modal-title">Gửi thư mời lịch họp lúc {{schedule.scheduleTime}} ngày {{schedule.scheduleDate | date:'dd/MM/yyyy'}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="closeModal(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form>
+    <div class="form-group row">
+      <label class="col-sm-12 col-form-label col-form-label-sm">Nội dung tin nhắn</label>
+      <div class="col-sm-12">
+        <textarea class="form-control" [(ngModel)]="messageContent" rows="3" name="messageContent"></textarea>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="closeModal(false)"><i class="fas fa-times"></i>Đóng</button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()"><i class="far fa-save"></i>Lưu và gửi thư mời</button>
+</div>
